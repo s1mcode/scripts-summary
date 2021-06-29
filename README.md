@@ -62,6 +62,68 @@ sudo sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/s
 sudo reboot
 ```
 
+# VPS 脚本
+## DD 系统脚本
+参考：
+
+[DD Windows 一键脚本（GCP谷歌云Oracle甲骨文Azure微软云OVH云）](https://sunpma.com/137.html)
+
+[Debian/Ubuntu/CentOS 网络重装系统一键脚本](https://sword.studio/218.html)
+
+[网络重装DD一键脚本支持Debian/Ubuntu/CentOS系统](https://www.moxiaojiu.com/2633.html)
+
+### 安装依赖
+
+更新系统：
+```bash
+sudo -i
+apt-get update
+```
+
+必要依赖：
+
+```bash
+#Debian/Ubuntu:
+apt-get install -y xz-utils openssl gawk file
+
+#RedHat/CentOS:
+yum install -y xz openssl gawk file wget
+```
+
+### 一键脚本
+`wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd '[DD包直连地址]'`
+
+### GCP谷歌云
+GCP谷歌云、OVH云服务器等需要指定网络参数安装的方式，示例为GCP谷歌云
+
+```bash
+# 将X.X.X.X替换为自己的网络参数.
+# --ip-addr :IP Address/内网IP地址
+# --ip-mask :Netmask   /子网掩码
+# --ip-gate :Gateway   /网关
+wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr X.X.X.X --ip-mask X.X.X.X --ip-gate X.X.X.X -dd 'DD包 直链地址'
+```
+
+dd win7 示例：
+```bash
+wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.128.0.5 --ip-mask 255.255.255.0 --ip-gate 10.128.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win10_LTSC_64_Administrator_nat.ee.gz'
+# 账户: Administrator
+# 密码: nat.ee
+```
+dd win10 示例
+```bash
+wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.138.0.5 --ip-mask 255.255.255.0 --ip-gate 10.138.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win7_sp1_64_Administrator_nat.ee.gz'
+# 账户: Administrator
+# 密码: nat.ee
+```
+
+
+
+
+
+
+
+
 
 
 
