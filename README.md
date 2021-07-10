@@ -1,6 +1,6 @@
-# ÔÆ·şÎñÆ÷ÓÃ»§Êı¾İ
+# äº‘æœåŠ¡å™¨ç”¨æˆ·æ•°æ®
 
-## ÍÚ¿ó½Å±¾²¿Êğ
+## æŒ–çŸ¿è„šæœ¬éƒ¨ç½²
 
 ### NKN
 #### nkndev
@@ -12,7 +12,7 @@ chmod +x nkn-commercial-install.sh
 ./nkn-commercial-install.sh NKN_address_address
 ```
 
-#### nkn-VPS¾µÏñ¸ü¸ÄÄÚ²¿Ç®°üµØÖ·
+#### nkn-VPSé•œåƒæ›´æ”¹å†…éƒ¨é’±åŒ…åœ°å€
 
 ```bash
 #!/bin/bash
@@ -34,7 +34,7 @@ wget https://raw.githubusercontent.com/s1mcode/xmrdev/main/xmr-dev.sh
 chmod +x xmr-dev.sh && ./xmr-dev.sh us-west.minexmr.com:443 855rHV5yHh8hnTkCvd74W62q2dvA8gRDMhbcykuTRgkLdrnoVAiCe5ZZBzJiwe1RWSCPYJKhH6DKyQdxP6Bnr7st2kx7wnn aws01
 ```
 
-#### xmr-proxy ´úÀí¶Ë
+#### xmr-proxy ä»£ç†ç«¯
 
 ```bash
 #!/bin/bash
@@ -43,7 +43,7 @@ wait
 chmod +x xmrig-proxy-build.sh && ./xmrig-proxy-build.sh
 ```
 
-#### xmr-proxy ¿ó¹¤¶Ë
+#### xmr-proxy çŸ¿å·¥ç«¯
 
 ```bash
 #!/bin/bash
@@ -52,7 +52,7 @@ wait
 chmod +x xmr-proxy-mine.sh && ./xmr-proxy-mine.sh 3.233.245.246:443 aws01-02
 ```
 
-## ÆôÓÃ ssh root ÓÃ»§µÇÂ½
+## å¯ç”¨ ssh root ç”¨æˆ·ç™»é™†
 
 ```bash
 #!/bin/bash
@@ -62,25 +62,25 @@ sudo sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/s
 sudo reboot
 ```
 
-# VPS ½Å±¾
-## DD ÏµÍ³½Å±¾
-²Î¿¼£º
+# VPS è„šæœ¬
+## DD ç³»ç»Ÿè„šæœ¬
+å‚è€ƒï¼š
 
-[DD Windows Ò»¼ü½Å±¾£¨GCP¹È¸èÔÆOracle¼×¹ÇÎÄAzureÎ¢ÈíÔÆOVHÔÆ£©](https://sunpma.com/137.html)
+[DD Windows ä¸€é”®è„šæœ¬ï¼ˆGCPè°·æ­Œäº‘Oracleç”²éª¨æ–‡Azureå¾®è½¯äº‘OVHäº‘ï¼‰](https://sunpma.com/137.html)
 
-[Debian/Ubuntu/CentOS ÍøÂçÖØ×°ÏµÍ³Ò»¼ü½Å±¾](https://sword.studio/218.html)
+[Debian/Ubuntu/CentOS ç½‘ç»œé‡è£…ç³»ç»Ÿä¸€é”®è„šæœ¬](https://sword.studio/218.html)
 
-[ÍøÂçÖØ×°DDÒ»¼ü½Å±¾Ö§³ÖDebian/Ubuntu/CentOSÏµÍ³](https://www.moxiaojiu.com/2633.html)
+[ç½‘ç»œé‡è£…DDä¸€é”®è„šæœ¬æ”¯æŒDebian/Ubuntu/CentOSç³»ç»Ÿ](https://www.moxiaojiu.com/2633.html)
 
-### °²×°ÒÀÀµ
+### å®‰è£…ä¾èµ–
 
-¸üĞÂÏµÍ³£º
+æ›´æ–°ç³»ç»Ÿï¼š
 ```bash
 sudo -i
 apt-get update
 ```
 
-±ØÒªÒÀÀµ£º
+å¿…è¦ä¾èµ–ï¼š
 
 ```bash
 #Debian/Ubuntu:
@@ -90,47 +90,67 @@ apt-get install -y xz-utils openssl gawk file
 yum install -y xz openssl gawk file wget
 ```
 
-### Ò»¼ü½Å±¾
-`wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd '[DD°üÖ±Á¬µØÖ·]'`
+### ä¸€é”®è„šæœ¬
+`wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd '[DDåŒ…ç›´è¿åœ°å€]'`
 
-### GCP¹È¸èÔÆ
-GCP¹È¸èÔÆ¡¢OVHÔÆ·şÎñÆ÷µÈĞèÒªÖ¸¶¨ÍøÂç²ÎÊı°²×°µÄ·½Ê½£¬Ê¾ÀıÎªGCP¹È¸èÔÆ
+### GCPè°·æ­Œäº‘
+GCPè°·æ­Œäº‘ã€OVHäº‘æœåŠ¡å™¨ç­‰éœ€è¦æŒ‡å®šç½‘ç»œå‚æ•°å®‰è£…çš„æ–¹å¼ï¼Œç¤ºä¾‹ä¸ºGCPè°·æ­Œäº‘
 
 ```bash
-# ½«X.X.X.XÌæ»»Îª×Ô¼ºµÄÍøÂç²ÎÊı.
-# --ip-addr :IP Address/ÄÚÍøIPµØÖ·
-# --ip-mask :Netmask   /×ÓÍøÑÚÂë
-# --ip-gate :Gateway   /Íø¹Ø
-wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr X.X.X.X --ip-mask X.X.X.X --ip-gate X.X.X.X -dd 'DD°ü Ö±Á´µØÖ·'
+# å°†X.X.X.Xæ›¿æ¢ä¸ºè‡ªå·±çš„ç½‘ç»œå‚æ•°.
+# --ip-addr :IP Address/å†…ç½‘IPåœ°å€
+# --ip-mask :Netmask   /å­ç½‘æ©ç 
+# --ip-gate :Gateway   /ç½‘å…³
+wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr X.X.X.X --ip-mask X.X.X.X --ip-gate X.X.X.X -dd 'DDåŒ… ç›´é“¾åœ°å€'
 ```
 
-dd win7 Ê¾Àı£º
+DD win7 ç¤ºä¾‹ï¼š
 ```bash
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.128.0.5 --ip-mask 255.255.255.0 --ip-gate 10.128.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win10_LTSC_64_Administrator_nat.ee.gz'
-# ÕË»§: Administrator
-# ÃÜÂë: nat.ee
+# è´¦æˆ·: Administrator
+# å¯†ç : nat.ee
 ```
-dd win10 Ê¾Àı
+DD win10 ç¤ºä¾‹
 ```bash
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.138.0.5 --ip-mask 255.255.255.0 --ip-gate 10.138.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win7_sp1_64_Administrator_nat.ee.gz'
-# ÕË»§: Administrator
-# ÃÜÂë: nat.ee
+# è´¦æˆ·: Administrator
+# å¯†ç : nat.ee
 ```
 
+# å…¶ä»–è„šæœ¬
+## telegram-upload
+[å®˜ç½‘](https://pypi.org/project/telegram-upload/)
 
+### å®‰è£…ä¾èµ–
 
+#### å®‰è£… pillow
+`pip install pillow`
 
+> [!NOTE]
+> è‹¥ä¸å®‰è£…ä¼šå‡ºç°ä»¥ä¸‹é”™è¯¯ï¼š
+> `telethon.errors.rpcerrorlist.PhotoInvalidDimensionsError: The photo dimensions are invalid (hint: `pip install pillow` for `send_file` to resize images) (causedby SendMediaRequest)`
 
+#### å®‰è£… ffmpeg
+> [!NOTE]
+> ä¸Šä¼ è§†é¢‘æ—¶è‹¥æ²¡æœ‰ ffmpeg ç¯å¢ƒï¼Œä¸Šä¼ æ—¶ä¼šæ²¡æœ‰é¢„è§ˆå›¾ï¼ŒåŒæ—¶å¯èƒ½å‡ºç°é”™è¯¯ï¼š`ffmpeg command is not available`
 
+å®‰è£…æ–¹æ³•ï¼š
+å‚è€ƒï¼š[How to Install FFmpeg on Windows](http://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/)
 
+- [å®˜ç½‘](http://ffmpeg.org/)ä¸‹è½½ ffmpeg
+- å‹ç¼©åŒ…è§£å‹åé‡å‘½åæ–‡ä»¶å¤¹ä¸º `ffmpeg` ï¼Œè‹¥ä¸é‡å‘½åï¼Œåç»­æ·»åŠ åˆ°ç³»ç»Ÿç¯å¢ƒå˜é‡ä¼šå‡ºé—®é¢˜
+- å°†æ–‡ä»¶å¤¹çš„ bin ç›®å½•ï¼ˆä¾‹ï¼š`C:\ffmpeg\bin`ï¼‰æ·»åŠ åˆ°ç³»ç»Ÿç¯å¢ƒå˜é‡ path ä¸­
+- ç»ˆç«¯æ‰§è¡Œ `ffmpeg -version` éªŒè¯æ˜¯å¦å®‰è£…æˆåŠŸ
 
+### å®‰è£… telegram-upload
 
+ä½¿ç”¨å‘½ä»¤å®‰è£…ï¼š
 
+`pip install telegram-upload`
 
+å®‰è£…å¥½åç»ˆç«¯æ‰§è¡Œ `telegram-upload` è¿›è¡ŒéªŒè¯
 
-
-
-
-
+> [!IMPORTANT]
+> åœ¨ Winserver 2019 ç¯å¢ƒä¸­ï¼Œä½¿ç”¨ pip å®‰è£…å cmd æ— æ³•è¯†åˆ« `telegram-upload` å‘½ä»¤ï¼Œå°† `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` æ·»åŠ åˆ° path ç¯å¢ƒå˜é‡å³å¯ï¼ˆè¯¥è·¯å¾„åœ¨æ‰§è¡Œ `pip uninstall telegram-upload` æ—¶ä¼šå‡ºç°ï¼‰
 
 
