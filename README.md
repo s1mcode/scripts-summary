@@ -151,6 +151,6 @@ wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/Li
 安装好后终端执行 `telegram-upload` 进行验证
 
 > [!IMPORTANT]
-> 在 Winserver 2019 环境中，使用 pip 安装后 cmd 无法识别 `telegram-upload` 命令，将 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 添加到 path 环境变量即可（该路径在执行 `pip uninstall telegram-upload` 时会出现）
+> 在某些环境中，使用 pip 安装后 cmd 无法识别 `telegram-upload` 命令，原因是 `telegram-upload` 没有被安装到 `...\Python39\Scripts\` 路径中，而是被安装到了 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 路径中，将 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 添加到 path 环境变量即可（该路径在执行 `pip uninstall telegram-upload` 时会出现）
 
 
