@@ -117,6 +117,127 @@ wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/Li
 # 密码: nat.ee
 ```
 
+## `iptables` 的使用
+### 安装 `iptables`
+首先确定你的系统已经安装iptables
+
+```bash
+whereis iptables
+```
+
+
+如果能看到如下类似信息,说明你已经安装了 `iptables`
+
+```bash
+iptables: /sbin/iptables /usr/share/iptables /usr/share/man/man8/iptables.8.gz
+```
+
+
+如果不是这个提示,或者没有任何提示,那你的Debian上可能没有安装 `iptables`
+
+请使用如下命令安装:
+
+```bash
+apt-get install iptables
+```
+
+
+### 配置 `iptables`
+查看iptables配置：
+
+```bash
+iptables -L -n
+```
+
+
+如果是以下内容说明跟没配置一样
+
+```bash
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+ 
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+ 
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+```
+
+编辑/新建一个新的iptables策略
+
+```bash
+vim /etc/iptables.test.rules
+```
+
+
+
+```bash
+*filter
+
+# 接受所有已建立的入站连接
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# 允许所有出站流量
+# You could modify this to only allow certain traffic
+-A OUTPUT -j ACCEPT
+
+# 网站服务常用的80和443端口允许
+-A INPUT -p tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp --dport 443 -j ACCEPT
+-A INPUT -p tcp --dport 31570 -j ACCEPT
+
+# 允许SSH连接
+# The --dport 端口号要与 /etc/ssh/sshd_config 中的Port参数相同
+-A INPUT -p tcp -m state --state NEW --dport 22 -j ACCEPT
+
+# Now you should read up on iptables rules and consider whether ssh access
+# for everyone is really desired. Most likely you will only allow access from certain IPs.
+
+# 允许 ping
+#  note that blocking other types of icmp packets is considered a bad idea by some
+#  remove -m icmp --icmp-type 8 from this line to allow all kinds of icmp:
+#  https://security.stackexchange.com/questions/22711
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+
+# log iptables denied calls (access via 'dmesg' command)
+-A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
+
+# 除了上面设置端口的规则，其他都拒绝
+-A INPUT -j REJECT
+-A FORWARD -j REJECT
+
+COMMIT
+#
+```
+
+加载配置策略生效
+
+```bash
+iptables-restore < /etc/iptables.test.rules
+```
+
+配置开机自动加载配置策略
+
+```bash
+vim /etc/network/if-pre-up.d/iptables
+```
+
+```bash
+#!/bin/bash
+/sbin/iptables-restore < /etc/iptables.test.rules
+```
+
+
+脚本设置运行权限
+
+```bash
+chmod +x /etc/network/if-pre-up.d/iptables
+```
+
+       
+
+
+
 # 其他脚本
 ## telegram-upload
 [官网](https://pypi.org/project/telegram-upload/)
