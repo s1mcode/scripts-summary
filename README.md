@@ -64,6 +64,9 @@ sudo reboot
 
 # VPS 脚本
 ## DD 系统脚本
+
+### 萌咖 DD 脚本
+
 参考：
 
 [DD Windows 一键脚本（GCP谷歌云Oracle甲骨文Azure微软云OVH云）](https://sunpma.com/137.html)
@@ -72,7 +75,7 @@ sudo reboot
 
 [网络重装DD一键脚本支持Debian/Ubuntu/CentOS系统](https://www.moxiaojiu.com/2633.html)
 
-### 安装依赖
+#### 安装依赖
 
 更新系统：
 ```bash
@@ -90,10 +93,12 @@ apt-get install -y xz-utils openssl gawk file
 yum install -y xz openssl gawk file wget
 ```
 
-### 一键脚本
+#### 一键脚本
+
 `wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd '[DD包直连地址]'`
 
-### GCP谷歌云
+#### GCP 谷歌云
+
 GCP谷歌云、OVH云服务器等需要指定网络参数安装的方式，示例为GCP谷歌云
 
 ```bash
@@ -104,18 +109,77 @@ GCP谷歌云、OVH云服务器等需要指定网络参数安装的方式，示�
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr X.X.X.X --ip-mask X.X.X.X --ip-gate X.X.X.X -dd 'DD包 直链地址'
 ```
 
-DD win7 示例：
+DD win10 示例：
 ```bash
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.128.0.5 --ip-mask 255.255.255.0 --ip-gate 10.128.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win10_LTSC_64_Administrator_nat.ee.gz'
 # 账户: Administrator
 # 密码: nat.ee
 ```
-DD win10 示例
+DD win7 示例
 ```bash
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.138.0.5 --ip-mask 255.255.255.0 --ip-gate 10.138.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win7_sp1_64_Administrator_nat.ee.gz'
 # 账户: Administrator
 # 密码: nat.ee
 ```
+
+### DigitalOcean 特殊 DD 法
+
+参考：[Digital Ocean 搭建 windows 系统](https://www.jianshu.com/p/b9784e042b28?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+
+创建虚拟机。
+
+点击新创建的实例，点击【Recovery】，点击【Boot from Recovery ISO】，点击右上角开关首先 Turn off，然后 Turn on。
+
+点击 Console，进入实例的控制台。
+
+一开始可能不会出现以下界面，按回车即会出现：
+
+```bash
+Root Password has been randomly set to:
+3e01-0b9d-ba13-fbc4
+---------------------------------------
+1.Mount your Disk Image [Not Mounted]
+2.Check Filesystem
+3.Reset Droplet Root Password4. Configure Keyboard
+5.Attempt to 'chroot' into installed system
+6.Interactive Shell [/bin/bash]
+Choose (1-6)and press Enter to continue.
+```
+原先创建机器的密码已经没用了，记住上面生成的密码，下面会用到，输入 `1`，回车。
+
+使用 ssh 客户端登陆。
+
+登录成功后，如果recovery console还在一开始的界面，输入6，回车，进入shell。
+
+安装dd包：
+
+```bash
+wget -O- https://oss.sunpma.com/Windows/Whole/Win10_LTSC_64_Administrator_nat.ee.gz | gunzip | dd of=/dev/vda
+# 账户: Administrator
+# 密码: nat.ee
+```
+
+等待安装完成，完成后即可关闭会话。
+
+回到 digital ocean 中实例的【Recovery】界面，首先点击右上角开关将其 Turn off，切换回 Boot from Hard Drive 模式后再 Turn on。
+
+点击 Console，进入实例的控制台，使用 DD 包的账户密码登陆。
+
+这时由于分辨率问题和网络问题，鼠标不好用，尽量用键盘操作，Tab 键、方向键 和 Enter 键配合使用：
+
+开始菜单 -> Windows 系统 -> 控制面板 -> 网络和 Internet -> 网络和共享中心 -> 更改适配器设置 -> 以太网 -> 属性 -> Internet 协议版本4 (TCP/IPv4) -> 属性 -> 使用 DigitalOcean 的 Networking 中的信息配置好 ip 地址，并自定义 DNS 服务器地址：
+
+```bash
+PUBLIC IPV4 ADDRESS
+143.198.151.74 # IP 地址
+PUBLIC GATEWAY
+143.198.144.1 # 默认网关
+SUBNET MASK
+255.255.240.0 # 子网掩码
+```
+将两个窗口都 确定 后，右侧会弹出是否连接到网络的选项，选择是。
+
+完成，使用 RDP 客户端开始使用 Windows。
 
 ## `iptables` 的使用
 ### 安装 `iptables`
@@ -124,7 +188,6 @@ wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/Li
 ```bash
 whereis iptables
 ```
-
 
 如果能看到如下类似信息,说明你已经安装了 `iptables`
 
