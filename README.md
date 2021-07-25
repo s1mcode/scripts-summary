@@ -124,7 +124,11 @@ wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/Li
 
 ### DigitalOcean 特殊 DD 法
 
-参考：[Digital Ocean 搭建 windows 系统](https://www.jianshu.com/p/b9784e042b28?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+参考：
+
+[Digital Ocean 搭建 windows 系统](https://www.jianshu.com/p/b9784e042b28?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+
+[介绍几款 Windows DD 镜像 - 秋水逸冰](https://teddysun.com/545.html)
 
 创建虚拟机。
 
@@ -181,6 +185,9 @@ SUBNET MASK
 
 完成，使用 RDP 客户端开始使用 Windows。
 
+> [!TIP]
+> 此电脑 -> 右键属性 -> 远程设置 -> 取消框选"仅允许运行使用网络级别身份验证的远程桌面的计算机连接(建议)" 
+
 ## `iptables` 的使用
 ### 安装 `iptables`
 首先确定你的系统已经安装iptables
@@ -231,8 +238,6 @@ target     prot opt source               destination
 ```bash
 vim /etc/iptables.test.rules
 ```
-
-
 
 ```bash
 *filter
@@ -297,9 +302,30 @@ vim /etc/network/if-pre-up.d/iptables
 chmod +x /etc/network/if-pre-up.d/iptables
 ```
 
-       
+## 测速脚本
+### SuperBench
 
+来源：[SuperBench.sh 一键测试服务器的基本参数](https://www.oldking.net/350.html)
 
+```bash
+wget -qO- sb.oldking.net | bash
+```
+
+### 本机 Speed test 测速
+
+```bash
+wget https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
+chmod +x speedtest.py
+./speedtest.py
+```
+
+## 流媒体平台及游戏区域限制测试脚本
+
+来源：[RegionRestrictionCheck](https://github.com/lmc999/RegionRestrictionCheck)
+
+```bash
+bash <(curl -L -s https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)
+```
 
 # 其他脚本
 ## telegram-upload
