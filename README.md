@@ -319,12 +319,30 @@ chmod +x speedtest.py
 ./speedtest.py
 ```
 
-## 流媒体平台及游戏区域限制测试脚本
+## 流媒体及游戏区域限制测试脚本
+
+### RegionRestrictionCheck - 多种流媒体测试
 
 来源：[RegionRestrictionCheck](https://github.com/lmc999/RegionRestrictionCheck)
 
 ```bash
 bash <(curl -L -s https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)
+```
+
+### netflix-verify - 奈飞测试
+
+来源：[netflix-verify](https://github.com/sjlleo/netflix-verify)
+
+X86_64：
+
+```bash
+wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6_linux_amd64 && chmod +x nf && clear && ./nf
+```
+
+ARM64：
+
+```bash
+wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6_linux_arm64 && chmod +x nf && clear && ./nf
 ```
 
 # 其他脚本
