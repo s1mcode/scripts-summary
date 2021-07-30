@@ -345,6 +345,94 @@ ARM64：
 wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6_linux_arm64 && chmod +x nf && clear && ./nf
 ```
 
+### Acme 脚本申请证书
+
+官网：[acme.sh](https://github.com/acmesh-official/acme.sh)
+
+参考：
+
+[申请SSL证书保姆级教程，包括FreeSSL申请、Acme脚本申请等方式](https://www.v2rayssr.com/ssl.html)
+
+[Debian10手动使用acme.sh脚本申请证书](https://www.zhizhuzi.org/2021/07/29/debian10%e6%89%8b%e5%8a%a8%e4%bd%bf%e7%94%a8acme-sh%e8%84%9a%e6%9c%ac%e7%94%b3%e8%af%b7%e8%af%81%e4%b9%a6/)
+
+安装 ACME：
+
+```bash
+curl https://get.acme.sh | sh
+```
+
+由于 acme.sh 现在使用 ZeroSSL 作为默认 CA，所以首先注册 [ZeroSSL](https://zerossl.com/)。（参考：[ZeroSSL.com CA](https://github.com/acmesh-official/acme.sh/wiki/ZeroSSL.com-CA)）
+
+```bash
+~/.acme.sh/acme.sh --register-account -m yourZeroSSLmail@example.com
+```
+
+#### 使用 Cloudflare DNS 验证的方式申请证书
+
+参考：[How to use DNS API](https://github.com/acmesh-official/acme.sh/wiki/dnsapi)
+
+设置 Cloudflare API 令牌：
+
+cloudflare 概述界面 -> 获取您的API令牌 -> API 密钥 -> Global API Key 查看 -> 复制 API 密钥
+
+```bash
+export CF_Key="API 密钥"
+export CF_Email="CF 邮箱"
+```
+
+生成证书：
+
+```bash
+~/.acme.sh/acme.sh --issue --dns dns_cf -d yourdomain.com -d *.yourdomain.com
+```
+
+成功后会返回如下内容：
+
+```bash
+[Thu Jul 29 12:15:37 UTC 2021] Cert success.
+-----BEGIN CERTIFICATE-----
+********************
+-----END CERTIFICATE-----
+[Thu Jul 29 12:15:37 UTC 2021] Your cert is in  /root/.acme.sh/yourdomain.com/yourdomain.com.cer 
+[Thu Jul 29 12:15:37 UTC 2021] Your cert key is in  /root/.acme.sh/yourdomain.com/yourdomain.com.key 
+[Thu Jul 29 12:15:37 UTC 2021] The intermediate CA cert is in  /root/.acme.sh/yourdomain.com/ca.cer 
+[Thu Jul 29 12:15:37 UTC 2021] And the full chain certs is there:  /root/.acme.sh/yourdomain.com/fullchain.cer
+```
+
+#### 安装证书
+
+前面证书生成以后, 接下来需要把证书 copy 到真正需要用它的地方。
+
+注意，默认生成的证书都放在安装目录下：~/.acme.sh/， 请不要直接使用此目录下的文件, 例如：不要直接让 nginx/apache 的配置文件使用这下面的文件。 这里面的文件都是内部使用，而且目录结构可能会变化。
+
+正确的使用方法是使用 `–installcert` 命令，并指定目标位置，然后证书文件会被copy到相应的位置。
+
+```bash
+mkdir /root/cert
+~/.acme.sh/acme.sh --installcert -d yourdomain.com --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt
+```
+
+#### 自动更新 `acme.sh`
+
+```bash
+~/.acme.sh/acme.sh --upgrade --auto-upgrade
+chmod -R 755 /root/cert
+```
+
+#### 更新证书
+目前证书在 60 天以后会自动更新, 你无需任何操作. 今后有可能会缩短这个时间, 不过都是自动的, 你不用关心。
+
+#### 撤销证书
+
+参考：[How to revoke a cert](https://github.com/acmesh-official/acme.sh/wiki/revokecert)
+
+出于安全原因，目前不允许用户通过 ZeroSSL 门户用户界面撤销通过 ACME 颁发的证书。
+要撤销此类证书，必须使用 ACME 客户端的撤销功能。
+
+```bash
+~/.acme.sh/acme.sh --revoke -d yourdomain.com
+```
+
 # 其他脚本
 ## telegram-upload
 [官网](https://pypi.org/project/telegram-upload/)
