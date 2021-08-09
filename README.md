@@ -345,7 +345,7 @@ ARM64：
 wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6_linux_arm64 && chmod +x nf && clear && ./nf
 ```
 
-### Acme 脚本申请证书
+## Acme 脚本申请证书
 
 官网：[acme.sh](https://github.com/acmesh-official/acme.sh)
 
@@ -366,6 +366,14 @@ curl https://get.acme.sh | sh
 ```bash
 ~/.acme.sh/acme.sh --register-account -m yourZeroSSLmail@example.com
 ```
+### 申请证书
+
+#### 使用 80 端口空闲的证书申请方式
+
+```bash
+~/.acme.sh/acme.sh  --issue -d mydomain.com   --standalone
+```
+
 
 #### 使用 Cloudflare DNS 验证的方式申请证书
 
@@ -383,7 +391,7 @@ export CF_Email="CF 邮箱"
 生成证书：
 
 ```bash
-~/.acme.sh/acme.sh --issue --dns dns_cf -d yourdomain.com -d *.yourdomain.com
+~/.acme.sh/acme.sh --issue --dns dns_cf -d mydomain.com -d *.mydomain.com
 ```
 
 成功后会返回如下内容：
@@ -393,13 +401,13 @@ export CF_Email="CF 邮箱"
 -----BEGIN CERTIFICATE-----
 ********************
 -----END CERTIFICATE-----
-[Thu Jul 29 12:15:37 UTC 2021] Your cert is in  /root/.acme.sh/yourdomain.com/yourdomain.com.cer 
-[Thu Jul 29 12:15:37 UTC 2021] Your cert key is in  /root/.acme.sh/yourdomain.com/yourdomain.com.key 
-[Thu Jul 29 12:15:37 UTC 2021] The intermediate CA cert is in  /root/.acme.sh/yourdomain.com/ca.cer 
-[Thu Jul 29 12:15:37 UTC 2021] And the full chain certs is there:  /root/.acme.sh/yourdomain.com/fullchain.cer
+[Thu Jul 29 12:15:37 UTC 2021] Your cert is in  /root/.acme.sh/mydomain.com/mydomain.com.cer 
+[Thu Jul 29 12:15:37 UTC 2021] Your cert key is in  /root/.acme.sh/mydomain.com/mydomain.com.key 
+[Thu Jul 29 12:15:37 UTC 2021] The intermediate CA cert is in  /root/.acme.sh/mydomain.com/ca.cer 
+[Thu Jul 29 12:15:37 UTC 2021] And the full chain certs is there:  /root/.acme.sh/mydomain.com/fullchain.cer
 ```
 
-#### 安装证书
+### 安装证书
 
 前面证书生成以后, 接下来需要把证书 copy 到真正需要用它的地方。
 
@@ -408,21 +416,20 @@ export CF_Email="CF 邮箱"
 正确的使用方法是使用 `–installcert` 命令，并指定目标位置，然后证书文件会被copy到相应的位置。
 
 ```bash
-mkdir /root/cert
-~/.acme.sh/acme.sh --installcert -d yourdomain.com --key-file /root/cert/private.key --fullchain-file /root/cert/cert.crt
+~/.acme.sh/acme.sh --installcert -d mydomain.com --key-file /root/private.key --fullchain-file /root/cert.crt
 ```
 
-#### 自动更新 `acme.sh`
+### 自动更新 `acme.sh`
 
 ```bash
 ~/.acme.sh/acme.sh --upgrade --auto-upgrade
 chmod -R 755 /root/cert
 ```
 
-#### 更新证书
+### 更新证书
 目前证书在 60 天以后会自动更新, 你无需任何操作. 今后有可能会缩短这个时间, 不过都是自动的, 你不用关心。
 
-#### 撤销证书
+### 撤销证书
 
 参考：[How to revoke a cert](https://github.com/acmesh-official/acme.sh/wiki/revokecert)
 
@@ -430,8 +437,18 @@ chmod -R 755 /root/cert
 要撤销此类证书，必须使用 ACME 客户端的撤销功能。
 
 ```bash
-~/.acme.sh/acme.sh --revoke -d yourdomain.com
+~/.acme.sh/acme.sh --revoke -d mydomain.com
 ```
+
+## 防火墙相关
+
+```bash
+apt install firewalld -y               # 安装 firewalld
+firewall-cmd --state                   # 查看防火墙状态
+systemctl stop firewalld.service       # 停止防火墙
+systemctl disable firewalld.service    # 禁止防火墙开机自启
+```
+
 
 # 其他脚本
 ## telegram-upload
