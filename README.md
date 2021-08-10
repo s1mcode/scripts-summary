@@ -489,7 +489,15 @@ https://gist.github.com/CraigCottingham/fad000cc2ec4678203acf62c4ad2ab23
 https://github.com/MeowLove/Linux-Remote-Desktop-Environment
 https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44
 
+## DNS 解锁
 
+### dns-change-hostmsu
+
+来源：[hostmsu](https://www.hostmsu.ru/)
+
+```bash
+wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unblock/library/shell/dns-change.sh && chmod +x dns-change.sh && ./dns-change.sh 103.149.46.148
+```
 
 # 其他脚本
 ## telegram-upload
