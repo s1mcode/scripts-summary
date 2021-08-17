@@ -535,4 +535,7 @@ wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unbl
 > [!IMPORTANT]
 > 在某些环境中，使用 pip 安装后 cmd 无法识别 `telegram-upload` 命令，原因是 `telegram-upload` 没有被安装到 `...\Python39\Scripts\` 路径中，而是被安装到了 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 路径中，将 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 添加到 path 环境变量即可（该路径在执行 `pip uninstall telegram-upload` 时会出现）
 
+> [!TIP]
+> Linux 中 使用 `sudo cp /home/USERNAME/.local/bin/telegram-upload /usr/local/bin/` 可以避免设置环境变量
+
 
