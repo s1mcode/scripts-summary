@@ -499,6 +499,9 @@ https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44
 wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unblock/library/shell/dns-change.sh && chmod +x dns-change.sh && ./dns-change.sh 103.149.46.148
 ```
 
+> [!TIP]
+> 如果想恢复备份，可在执行脚本文件时使用参数 `restore`
+
 # 其他脚本
 ## telegram-upload
 [官网](https://pypi.org/project/telegram-upload/)
