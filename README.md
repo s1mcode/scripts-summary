@@ -502,6 +502,38 @@ wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unbl
 > [!TIP]
 > 如果想恢复备份，可在执行脚本文件时使用参数 `restore`
 
+## windows server 中 openssh 使用
+
+参考：[windows server 2012 R2 安装 openssh](https://blog.csdn.net/weixin_42819452/article/details/115087464)
+
+### openssh 安装
+
+若 winserver 上没有 openssh, 则手动安装：
+
+访问[Openssh官网](https://github.com/PowerShell/Win32-OpenSSH/releases)并根据操作系统的位数选择合适的安装包下载
+
+打开cmd终端，进入解压后的 OpenSSH 文件夹，在cmd终端输入下面指令：
+
+```bash
+powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
+```
+
+### 配置ssh服务
+
+在防火墙开启端口22端口号：
+
+```bash
+netsh advfirewall firewall add rule name=sshd dir=in action=allow protocol=TCP localport=22
+```
+
+### 启动ssh服务
+
+```bash
+net start sshd
+```
+
+
+
 # 其他脚本
 ## telegram-upload
 [官网](https://pypi.org/project/telegram-upload/)
@@ -540,5 +572,12 @@ wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unbl
 
 > [!TIP]
 > Linux 中 使用 `sudo cp /home/USERNAME/.local/bin/telegram-upload /usr/local/bin/` 可以避免设置环境变量
+
+### 使用 telegram-upload
+
+```bash
+telegram-upload --to @CHATNAME --directories recursive --caption "" --large-files split PATH
+```
+
 
 
