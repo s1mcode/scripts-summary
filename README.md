@@ -1,9 +1,12 @@
-# 云服务器用户数据
+# README
 
-## 挖矿脚本部署
+## 云服务器用户数据
 
-### NKN
-#### nkndev
+### 挖矿脚本部署
+
+#### NKN
+
+**nkndev**
 
 ```bash
 #!/bin/bash
@@ -12,7 +15,7 @@ chmod +x nkn-commercial-install.sh
 ./nkn-commercial-install.sh NKN_address_address
 ```
 
-#### nkn-VPS镜像更改内部钱包地址
+**nkn-VPS镜像更改内部钱包地址**
 
 ```bash
 #!/bin/bash
@@ -25,8 +28,10 @@ chown -R nkn wallet.json
 chown -R nkn wallet.pswd
 service nkn-commercial start
 ```
-### XMR
-#### xmrdev
+
+#### XMR
+
+**xmrdev**
 
 ```bash
 #!/bin/bash
@@ -34,7 +39,7 @@ wget https://raw.githubusercontent.com/s1mcode/xmrdev/main/xmr-dev.sh
 chmod +x xmr-dev.sh && ./xmr-dev.sh us-west.minexmr.com:443 855rHV5yHh8hnTkCvd74W62q2dvA8gRDMhbcykuTRgkLdrnoVAiCe5ZZBzJiwe1RWSCPYJKhH6DKyQdxP6Bnr7st2kx7wnn aws01
 ```
 
-#### xmr-proxy 代理端
+**xmr-proxy 代理端**
 
 ```bash
 #!/bin/bash
@@ -43,7 +48,7 @@ wait
 chmod +x xmrig-proxy-build.sh && ./xmrig-proxy-build.sh
 ```
 
-#### xmr-proxy 矿工端
+**xmr-proxy 矿工端**
 
 ```bash
 #!/bin/bash
@@ -52,7 +57,7 @@ wait
 chmod +x xmr-proxy-mine.sh && ./xmr-proxy-mine.sh 3.233.245.246:443 aws01-02
 ```
 
-## 启用 ssh root 用户登陆
+### 启用 ssh root 用户登陆
 
 ```bash
 #!/bin/bash
@@ -62,10 +67,11 @@ sudo sed -i 's/^#\?PasswordAuthentication.*/PasswordAuthentication yes/g' /etc/s
 sudo reboot
 ```
 
-# VPS 脚本
-## DD 系统脚本
+## VPS 脚本
 
-### 萌咖 DD 脚本
+### DD 系统脚本
+
+#### 萌咖 DD 脚本
 
 参考：
 
@@ -75,9 +81,10 @@ sudo reboot
 
 [网络重装DD一键脚本支持Debian/Ubuntu/CentOS系统](https://www.moxiaojiu.com/2633.html)
 
-#### 安装依赖
+**安装依赖**
 
 更新系统：
+
 ```bash
 sudo -i
 apt-get update
@@ -93,11 +100,11 @@ apt-get install -y xz-utils openssl gawk file
 yum install -y xz openssl gawk file wget
 ```
 
-#### 一键脚本
+**一键脚本**
 
 `wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd '[DD包直连地址]'`
 
-#### GCP 谷歌云
+**GCP 谷歌云**
 
 GCP谷歌云、OVH云服务器等需要指定网络参数安装的方式，示例为GCP谷歌云
 
@@ -110,19 +117,22 @@ wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/Li
 ```
 
 DD win10 示例：
+
 ```bash
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.128.0.5 --ip-mask 255.255.255.0 --ip-gate 10.128.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win10_LTSC_64_Administrator_nat.ee.gz'
 # 账户: Administrator
 # 密码: nat.ee
 ```
+
 DD win7 示例
+
 ```bash
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh --ip-addr 10.138.0.5 --ip-mask 255.255.255.0 --ip-gate 10.138.0.1 -dd 'https://oss.sunpma.com/Windows/Whole/Win7_sp1_64_Administrator_nat.ee.gz'
 # 账户: Administrator
 # 密码: nat.ee
 ```
 
-### DigitalOcean 特殊 DD 法
+#### DigitalOcean 特殊 DD 法
 
 参考：
 
@@ -149,6 +159,7 @@ Root Password has been randomly set to:
 6.Interactive Shell [/bin/bash]
 Choose (1-6)and press Enter to continue.
 ```
+
 原先创建机器的密码已经没用了，记住上面生成的密码，下面会用到，输入 `1`，回车。
 
 使用 ssh 客户端登陆。
@@ -171,7 +182,7 @@ wget -O- https://oss.sunpma.com/Windows/Whole/Win10_LTSC_64_Administrator_nat.ee
 
 这时由于分辨率问题和网络问题，鼠标不好用，尽量用键盘操作，Tab 键、方向键 和 Enter 键配合使用：
 
-开始菜单 -> Windows 系统 -> 控制面板 -> 网络和 Internet -> 网络和共享中心 -> 更改适配器设置 -> 以太网 -> 属性 -> Internet 协议版本4 (TCP/IPv4) -> 属性 -> 使用 DigitalOcean 的 Networking 中的信息配置好 ip 地址，并自定义 DNS 服务器地址：
+开始菜单 -&gt; Windows 系统 -&gt; 控制面板 -&gt; 网络和 Internet -&gt; 网络和共享中心 -&gt; 更改适配器设置 -&gt; 以太网 -&gt; 属性 -&gt; Internet 协议版本4 \(TCP/IPv4\) -&gt; 属性 -&gt; 使用 DigitalOcean 的 Networking 中的信息配置好 ip 地址，并自定义 DNS 服务器地址：
 
 ```bash
 PUBLIC IPV4 ADDRESS
@@ -181,15 +192,17 @@ PUBLIC GATEWAY
 SUBNET MASK
 255.255.240.0 # 子网掩码
 ```
+
 将两个窗口都 确定 后，右侧会弹出是否连接到网络的选项，选择是。
 
 完成，使用 RDP 客户端开始使用 Windows。
 
-> [!TIP]
-> 此电脑 -> 右键属性 -> 远程设置 -> 取消框选"仅允许运行使用网络级别身份验证的远程桌面的计算机连接(建议)" 
+> \[!TIP\] 此电脑 -&gt; 右键属性 -&gt; 远程设置 -&gt; 取消框选"仅允许运行使用网络级别身份验证的远程桌面的计算机连接\(建议\)"
 
-## `iptables` 的使用
-### 安装 `iptables`
+### `iptables` 的使用
+
+#### 安装 `iptables`
+
 首先确定你的系统已经安装iptables
 
 ```bash
@@ -202,7 +215,6 @@ whereis iptables
 iptables: /sbin/iptables /usr/share/iptables /usr/share/man/man8/iptables.8.gz
 ```
 
-
 如果不是这个提示,或者没有任何提示,那你的Debian上可能没有安装 `iptables`
 
 请使用如下命令安装:
@@ -211,24 +223,23 @@ iptables: /sbin/iptables /usr/share/iptables /usr/share/man/man8/iptables.8.gz
 apt-get install iptables
 ```
 
+#### 配置 `iptables`
 
-### 配置 `iptables`
 查看iptables配置：
 
 ```bash
 iptables -L -n
 ```
 
-
 如果是以下内容说明跟没配置一样
 
 ```bash
 Chain INPUT (policy ACCEPT)
 target     prot opt source               destination         
- 
+
 Chain FORWARD (policy ACCEPT)
 target     prot opt source               destination         
- 
+
 Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
 ```
@@ -295,15 +306,15 @@ vim /etc/network/if-pre-up.d/iptables
 /sbin/iptables-restore < /etc/iptables.test.rules
 ```
 
-
 脚本设置运行权限
 
 ```bash
 chmod +x /etc/network/if-pre-up.d/iptables
 ```
 
-## 测速脚本
-### SuperBench
+### 测速脚本
+
+#### SuperBench
 
 来源：[SuperBench.sh 一键测试服务器的基本参数](https://www.oldking.net/350.html)
 
@@ -311,7 +322,7 @@ chmod +x /etc/network/if-pre-up.d/iptables
 wget -qO- sb.oldking.net | bash
 ```
 
-### 本机 Speed test 测速
+#### 本机 Speed test 测速
 
 ```bash
 wget https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py
@@ -319,9 +330,9 @@ chmod +x speedtest.py
 ./speedtest.py
 ```
 
-## 流媒体及游戏区域限制测试脚本
+### 流媒体及游戏区域限制测试脚本
 
-### RegionRestrictionCheck - 多种流媒体测试
+#### RegionRestrictionCheck - 多种流媒体测试
 
 来源：[RegionRestrictionCheck](https://github.com/lmc999/RegionRestrictionCheck)
 
@@ -329,11 +340,11 @@ chmod +x speedtest.py
 bash <(curl -L -s https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)
 ```
 
-### netflix-verify - 奈飞测试
+#### netflix-verify - 奈飞测试
 
 来源：[netflix-verify](https://github.com/sjlleo/netflix-verify)
 
-X86_64：
+X86\_64：
 
 ```bash
 wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6_linux_amd64 && chmod +x nf && clear && ./nf
@@ -345,7 +356,7 @@ ARM64：
 wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6_linux_arm64 && chmod +x nf && clear && ./nf
 ```
 
-## Acme 脚本申请证书
+### Acme 脚本申请证书
 
 官网：[acme.sh](https://github.com/acmesh-official/acme.sh)
 
@@ -366,22 +377,22 @@ curl https://get.acme.sh | sh
 ```bash
 ~/.acme.sh/acme.sh --register-account -m yourZeroSSLmail@example.com
 ```
-### 申请证书
 
-#### 使用 80 端口空闲的证书申请方式
+#### 申请证书
+
+**使用 80 端口空闲的证书申请方式**
 
 ```bash
 ~/.acme.sh/acme.sh  --issue -d mydomain.com   --standalone
 ```
 
-
-#### 使用 Cloudflare DNS 验证的方式申请证书
+**使用 Cloudflare DNS 验证的方式申请证书**
 
 参考：[How to use DNS API](https://github.com/acmesh-official/acme.sh/wiki/dnsapi)
 
 设置 Cloudflare API 令牌：
 
-cloudflare 概述界面 -> 获取您的API令牌 -> API 密钥 -> Global API Key 查看 -> 复制 API 密钥
+cloudflare 概述界面 -&gt; 获取您的API令牌 -&gt; API 密钥 -&gt; Global API Key 查看 -&gt; 复制 API 密钥
 
 ```bash
 export CF_Key="API 密钥"
@@ -407,7 +418,7 @@ export CF_Email="CF 邮箱"
 [Thu Jul 29 12:15:37 UTC 2021] And the full chain certs is there:  /root/.acme.sh/mydomain.com/fullchain.cer
 ```
 
-### 安装证书
+#### 安装证书
 
 前面证书生成以后, 接下来需要把证书 copy 到真正需要用它的地方。
 
@@ -419,28 +430,28 @@ export CF_Email="CF 邮箱"
 ~/.acme.sh/acme.sh --installcert -d mydomain.com --key-file /root/private.key --fullchain-file /root/cert.crt
 ```
 
-### 自动更新 `acme.sh`
+#### 自动更新 `acme.sh`
 
 ```bash
 ~/.acme.sh/acme.sh --upgrade --auto-upgrade
 chmod -R 755 /root/cert
 ```
 
-### 更新证书
+#### 更新证书
+
 目前证书在 60 天以后会自动更新, 你无需任何操作. 今后有可能会缩短这个时间, 不过都是自动的, 你不用关心。
 
-### 撤销证书
+#### 撤销证书
 
 参考：[How to revoke a cert](https://github.com/acmesh-official/acme.sh/wiki/revokecert)
 
-出于安全原因，目前不允许用户通过 ZeroSSL 门户用户界面撤销通过 ACME 颁发的证书。
-要撤销此类证书，必须使用 ACME 客户端的撤销功能。
+出于安全原因，目前不允许用户通过 ZeroSSL 门户用户界面撤销通过 ACME 颁发的证书。 要撤销此类证书，必须使用 ACME 客户端的撤销功能。
 
 ```bash
 ~/.acme.sh/acme.sh --revoke -d mydomain.com
 ```
 
-## 防火墙相关
+### 防火墙相关
 
 ```bash
 apt install firewalld -y               # 安装 firewalld
@@ -449,19 +460,18 @@ systemctl stop firewalld.service       # 停止防火墙
 systemctl disable firewalld.service    # 禁止防火墙开机自启
 ```
 
-## Linux 安装图形化界面
+### Linux 安装图形化界面
 
-### 甲骨文ARM安装带声音的RDP远程Linux桌面
+#### 甲骨文ARM安装带声音的RDP远程Linux桌面
 
 来源：[甲骨文ARM安装带声音的RDP远程Linux桌面](https://hostloc.com/thread-871447-1-1.html)
 
-> [!NOTE]
-> 本脚本暂只支持Ubuntu20.
-> 
+> \[!NOTE\] 本脚本暂只支持Ubuntu20.
+>
 > 仅在ARM架构进行常规测试,不保证完全可用,请提前做好回滚准备!
-> 
+>
 > 甲骨文封号机制不明,不保证账号稳定性!
-> 
+>
 > 环境: LXDE + XRDP + XRDP-PA
 
 ```bash
@@ -471,27 +481,23 @@ wget https://gist.githubusercontent.com/flyqie/60a005535afc0b5d45255619299b9630/
 sudo reboot
 ```
 
-> [!TIP]待重启后即可通过SSH隧道访问,如需公网访问请自行开放防火墙.
-> 
+> \[!TIP\]待重启后即可通过SSH隧道访问,如需公网访问请自行开放防火墙.
+>
 > RDP Port: 3389
-> 
+>
 > RDP Username: rdpuser
-> 
-> RDP Default Password: rdpuser_password
+>
+> RDP Default Password: rdpuser\_password
 
-Github Gist链接:
-https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9630
+Github Gist链接: [https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9630](https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9630)
 
 参考链接:
 
-https://gist.github.com/rkttu/35ecab5604c9ddc356b0af4644d5a226
-https://gist.github.com/CraigCottingham/fad000cc2ec4678203acf62c4ad2ab23
-https://github.com/MeowLove/Linux-Remote-Desktop-Environment
-https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44
+[https://gist.github.com/rkttu/35ecab5604c9ddc356b0af4644d5a226](https://gist.github.com/rkttu/35ecab5604c9ddc356b0af4644d5a226) [https://gist.github.com/CraigCottingham/fad000cc2ec4678203acf62c4ad2ab23](https://gist.github.com/CraigCottingham/fad000cc2ec4678203acf62c4ad2ab23) [https://github.com/MeowLove/Linux-Remote-Desktop-Environment](https://github.com/MeowLove/Linux-Remote-Desktop-Environment) [https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44](https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44)
 
-## DNS 解锁
+### DNS 解锁
 
-### dns-change-hostmsu
+#### dns-change-hostmsu
 
 来源：[hostmsu](https://www.hostmsu.ru/)
 
@@ -499,14 +505,13 @@ https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44
 wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unblock/library/shell/dns-change.sh && chmod +x dns-change.sh && ./dns-change.sh 103.149.46.148
 ```
 
-> [!TIP]
-> 如果想恢复备份，可在执行脚本文件时使用参数 `restore`
+> \[!TIP\] 如果想恢复备份，可在执行脚本文件时使用参数 `restore`
 
-## windows server 中 openssh 使用
+### windows server 中 openssh 使用
 
 参考：[windows server 2012 R2 安装 openssh](https://blog.csdn.net/weixin_42819452/article/details/115087464)
 
-### openssh 安装
+#### openssh 安装
 
 若 winserver 上没有 openssh, 则手动安装：
 
@@ -518,7 +523,7 @@ wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unbl
 powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
 ```
 
-### 配置ssh服务
+#### 配置ssh服务
 
 在防火墙开启端口22端口号：
 
@@ -526,40 +531,38 @@ powershell.exe -ExecutionPolicy Bypass -File install-sshd.ps1
 netsh advfirewall firewall add rule name=sshd dir=in action=allow protocol=TCP localport=22
 ```
 
-### 启动ssh服务
+#### 启动ssh服务
 
 ```bash
 net start sshd
 ```
 
+## 其他脚本
 
+### telegram-upload
 
-# 其他脚本
-## telegram-upload
 [官网](https://pypi.org/project/telegram-upload/)
 
-### 安装依赖
+#### 安装依赖
 
-#### 安装 pillow
+**安装 pillow**
+
 `pip install pillow`
 
-> [!NOTE]
-> 若不安装会出现以下错误：
-> `telethon.errors.rpcerrorlist.PhotoInvalidDimensionsError: The photo dimensions are invalid (hint: `pip install pillow` for `send_file` to resize images) (causedby SendMediaRequest)`
+> \[!NOTE\] 若不安装会出现以下错误： `telethon.errors.rpcerrorlist.PhotoInvalidDimensionsError: The photo dimensions are invalid (hint:`pip install pillow`for`send\_file`to resize images) (causedby SendMediaRequest)`
 
-#### 安装 ffmpeg
-> [!NOTE]
-> 上传视频时若没有 ffmpeg 环境，上传时会没有预览图，同时可能出现错误：`ffmpeg command is not available`
+**安装 ffmpeg**
 
-安装方法：
-参考：[How to Install FFmpeg on Windows](http://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/)
+> \[!NOTE\] 上传视频时若没有 ffmpeg 环境，上传时会没有预览图，同时可能出现错误：`ffmpeg command is not available`
 
-- [官网](http://ffmpeg.org/)下载 ffmpeg
-- 压缩包解压后重命名文件夹为 `ffmpeg` ，若不重命名，后续添加到系统环境变量会出问题
-- 将文件夹的 bin 目录（例：`C:\ffmpeg\bin`）添加到系统环境变量 path 中
-- 终端执行 `ffmpeg -version` 验证是否安装成功
+安装方法： 参考：[How to Install FFmpeg on Windows](http://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/)
 
-### 安装 telegram-upload
+* [官网](http://ffmpeg.org/)下载 ffmpeg
+* 压缩包解压后重命名文件夹为 `ffmpeg` ，若不重命名，后续添加到系统环境变量会出问题
+* 将文件夹的 bin 目录（例：`C:\ffmpeg\bin`）添加到系统环境变量 path 中
+* 终端执行 `ffmpeg -version` 验证是否安装成功
+
+#### 安装 telegram-upload
 
 使用命令安装：
 
@@ -567,17 +570,15 @@ net start sshd
 
 安装好后终端执行 `telegram-upload` 进行验证
 
-> [!IMPORTANT]
-> 在某些环境中，使用 pip 安装后 cmd 无法识别 `telegram-upload` 命令，原因是 `telegram-upload` 没有被安装到 `...\Python39\Scripts\` 路径中，而是被安装到了 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 路径中，将 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 添加到 path 环境变量即可（该路径在执行 `pip uninstall telegram-upload` 时会出现）
+> \[!IMPORTANT\] 在某些环境中，使用 pip 安装后 cmd 无法识别 `telegram-upload` 命令，原因是 `telegram-upload` 没有被安装到 `...\Python39\Scripts\` 路径中，而是被安装到了 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 路径中，将 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 添加到 path 环境变量即可（该路径在执行 `pip uninstall telegram-upload` 时会出现）
+>
+> \[!TIP\] Linux 中 使用 `sudo cp /home/USERNAME/.local/bin/telegram-upload /usr/local/bin/` 可以避免设置环境变量
 
-> [!TIP]
-> Linux 中 使用 `sudo cp /home/USERNAME/.local/bin/telegram-upload /usr/local/bin/` 可以避免设置环境变量
-
-### 使用 telegram-upload
+#### 使用 telegram-upload
 
 ```bash
 telegram-upload --to @CHATNAME --directories recursive --caption "" --large-files split PATH
 ```
 
-
+test 
 
