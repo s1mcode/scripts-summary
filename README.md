@@ -537,6 +537,108 @@ netsh advfirewall firewall add rule name=sshd dir=in action=allow protocol=TCP l
 net start sshd
 ```
 
+### Ubuntu 上创建 Python 虚拟环境
+
+通过运行以下命令来验证系统中是否安装了Python 3：
+
+```text
+python3 -V
+```
+
+输出应如下所示：
+
+```text
+Python 3.6.5
+```
+
+从Python 3.6开始，创建虚拟环境的推荐方法是使用`venv`模块。
+
+我们先安装提供`venv`模块的`python3-venv`软件包。
+
+```text
+sudo apt install python3-venv
+```
+
+安装完模块后，我们就可以为Python 3创建虚拟环境了。
+
+切换到要存储Python 3虚拟环境的目录。 在目录中，运行以下命令来创建新的虚拟环境：
+
+```text
+python3 -m venv my-project-env
+```
+
+上面的命令创建一个名为`my-project-env`的目录，其中包含Python二进制文件，Pip包管理器，标准Python库和其他支持文件的副本。
+
+要开始使用此虚拟环境，您需要通过运行`activate`脚本将其激活：
+
+```text
+source my-project-env/bin/activate
+```
+
+一旦激活，虚拟环境的bin目录将添加到[`$PATH`](https://www.myfreax.com/how-to-add-directory-to-path-in-linux/)变量的开头。 此外，您的Shell提示符也会更改，并且会显示您当前正在使用的虚拟环境的名称。 在我们的例子中是`my-project-env`：
+
+```text
+$ source my-project-env/bin/activate
+(my-project-env) $
+```
+
+现在虚拟环境已激活，我们可以使用pip开始安装，升级和删除软件包。
+
+让我们使用[Requests](http://docs.python-requests.org/en/master/)模块创建一个简单的Python脚本。
+
+在虚拟环境中，可以使用命令`pip`代替`pip3`，并使用`python`代替`python3`。
+
+第一步是使用Python包管理器pip安装模块：
+
+```text
+pip install requests
+```
+
+要验证安装，您可以尝试导入模块：
+
+```text
+python -c "import requests"
+```
+
+如果导入模块没有错误，则说明安装成功。
+
+在此示例中，我们将使用[ httpbin.org ](https://httpbin.org/)网站，该网站提供了简单的HTTP Request响应服务以打印所有标题条目。
+
+打开您的[文本编辑器](https://www.myfreax.com/how-to-install-sublime-text-3-on-ubuntu-18-04/)，然后创建一个新文件：
+
+```text
+nano testing.py
+```
+
+将以下内容粘贴到文件中：
+
+```text
+import requests
+
+r = requests.get('http://httpbin.org/get')  
+print(r.headers)  
+```
+
+关闭并保存文件。
+
+我们现在可以通过输入以下内容来运行脚本：
+
+```text
+python testing.py
+```
+
+脚本将打印所有标题条目的字典，如下所示：
+
+```text
+{'Connection': 'keep-alive', 'Server': 'gunicorn/19.9.0', 'Date': 'Tue, 18 Sep 2018 16:50:03 GMT', 'Content-Type': 'application/json', 'Content-Length': '266', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Via': '1.1 vegur'}
+```
+
+完成工作后停用虚拟环境，只需键入`deactivate`，您将返回到常规shell。
+
+```text
+deactivate
+```
+
 ## 其他脚本
 
 ### telegram-upload
