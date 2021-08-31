@@ -537,7 +537,21 @@ netsh advfirewall firewall add rule name=sshd dir=in action=allow protocol=TCP l
 net start sshd
 ```
 
-### Ubuntu 上创建 Python 虚拟环境
+### Python 相关命令
+
+#### 安装指定版本 python
+
+```bash
+sudo apt install python3.9
+```
+
+#### 升级 pip
+
+```text
+python -m pip install --upgrade pip
+```
+
+### 创建 Python 虚拟环境
 
 通过运行以下命令来验证系统中是否安装了Python 3：
 
@@ -557,6 +571,8 @@ Python 3.6.5
 
 ```text
 sudo apt install python3-venv
+# 或其他版本 python 环境
+sudo apt install python3.9-venv
 ```
 
 安装完模块后，我们就可以为Python 3创建虚拟环境了。
@@ -565,6 +581,8 @@ sudo apt install python3-venv
 
 ```text
 python3 -m venv my-project-env
+# 或其他版本 python 环境
+python3.9 -m venv my-project-env
 ```
 
 上面的命令创建一个名为`my-project-env`的目录，其中包含Python二进制文件，Pip包管理器，标准Python库和其他支持文件的副本。
