@@ -545,6 +545,12 @@ net start sshd
 sudo apt install python3.9
 ```
 
+#### 安装 pip3
+
+```bash
+sudo apt install python3-pip
+```
+
 #### 升级 pip
 
 ```text
