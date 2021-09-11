@@ -497,8 +497,6 @@ echo xfce4-session >~/.xsession
 sudo service xrdp restart
 ```
 
-### 设置本地用户帐户密码 <a id="set-a-local-user-account-password"></a>
-
 如果在创建 VM 时已为用户帐户创建密码，请跳过此步骤。 如果仅使用 SSH 密钥身份验证，并且未设置本地帐户密码，请在使用 xrdp 之前指定密码以登录到 VM。 xrdp 无法接受使用 SSH 密钥进行身份验证。 以下示例为用户帐户 _azureuser_ 指定密码：
 
 ```text
