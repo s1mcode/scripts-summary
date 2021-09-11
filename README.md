@@ -462,6 +462,65 @@ systemctl disable firewalld.service    # 禁止防火墙开机自启
 
 ### Linux 安装图形化界面
 
+#### Azure Ubuntu 安装 xrdp
+
+来源：[安装并配置 xrdp 以在 Ubuntu 上使用远程桌面](https://docs.microsoft.com/zh-cn/azure/virtual-machines/linux/use-remote-desktop)
+
+以下示例在 Ubuntu 18.04 LTS VM 上安装轻型 [xfce4](https://www.xfce.org/) 桌面环境。 其他发行版的命令略有不同（例如，使用 `yum` 在 Red Hat Enterprise Linux 上安装并配置适当的 `selinux` 规则，或者使用 `zypper` 在 SUSE 上安装）。
+
+首先，通过 SSH 连接到 VM。 
+
+接下来，使用 `apt` 安装 xfce：
+
+```text
+sudo apt-get update
+sudo apt-get -y install xfce4
+sudo apt install xfce4-session
+```
+
+安装桌面环境后，请配置远程桌面服务来侦听传入连接。 [xrdp](http://xrdp.org/) 是大多数 Linux 分发版中提供的开源远程桌面协议 \(RDP\) 服务器，可与 xfce 完美配合。 在 Ubuntu VM 上安装 xrdp：
+
+```text
+sudo apt-get -y install xrdp
+sudo systemctl enable xrdp
+```
+
+告诉 xrdp 在启动会话时要使用的桌面环境。 配置 xrdp 以使用 xfce 作为桌面环境：
+
+```text
+echo xfce4-session >~/.xsession
+```
+
+重新启动 xrdp 服务使更改生效：
+
+```text
+sudo service xrdp restart
+```
+
+### 设置本地用户帐户密码 <a id="set-a-local-user-account-password"></a>
+
+如果在创建 VM 时已为用户帐户创建密码，请跳过此步骤。 如果仅使用 SSH 密钥身份验证，并且未设置本地帐户密码，请在使用 xrdp 之前指定密码以登录到 VM。 xrdp 无法接受使用 SSH 密钥进行身份验证。 以下示例为用户帐户 _azureuser_ 指定密码：
+
+```text
+sudo passwd azureuser
+```
+
+指定密码不会将 SSHD 配置更新为允许密码登录（如果当前不允许）。 从安全角度看，可能想要使用基于密钥的身份验证通过 SSH 隧道连接到 VM，并连接到 xrdp。 如果是这样，请跳过以下创建网络安全组规则的步骤，以允许远程桌面流量。
+
+若要允许远程桌面流量到达 Linux VM，需要创建网络安全组规则以允许端口 3389 上的 TCP 访问 VM。 
+
+以下示例在端口 _3389_ 上使用 [az vm open-port](https://docs.microsoft.com/zh-cn/cli/azure/vm#az_vm_open_port) 创建网络安全组规则。 使用 Azure CLI（而不是与 VM 的 SSH 会话），打开以下网络安全组规则：
+
+```text
+az vm open-port --resource-group myResourceGroup --name myVM --port 3389
+```
+
+安装 firefox：
+
+```bash
+sudo apt-get install firefox
+```
+
 #### 甲骨文ARM安装带声音的RDP远程Linux桌面
 
 来源：[甲骨文ARM安装带声音的RDP远程Linux桌面](https://hostloc.com/thread-871447-1-1.html)
