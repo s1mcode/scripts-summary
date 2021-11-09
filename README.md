@@ -136,7 +136,7 @@ wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/Li
 
 参考：
 
-[Digital Ocean 搭建 windows 系统](https://www.jianshu.com/p/b9784e042b28?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+[Digital Ocean 搭建 windows 系统](https://www.jianshu.com/p/b9784e042b28)
 
 [介绍几款 Windows DD 镜像 - 秋水逸冰](https://teddysun.com/545.html)
 
@@ -182,7 +182,7 @@ wget -O- https://oss.sunpma.com/Windows/Whole/Win10_LTSC_64_Administrator_nat.ee
 
 这时由于分辨率问题和网络问题，鼠标不好用，尽量用键盘操作，Tab 键、方向键 和 Enter 键配合使用：
 
-开始菜单 -&gt; Windows 系统 -&gt; 控制面板 -&gt; 网络和 Internet -&gt; 网络和共享中心 -&gt; 更改适配器设置 -&gt; 以太网 -&gt; 属性 -&gt; Internet 协议版本4 \(TCP/IPv4\) -&gt; 属性 -&gt; 使用 DigitalOcean 的 Networking 中的信息配置好 ip 地址，并自定义 DNS 服务器地址：
+开始菜单 -> Windows 系统 -> 控制面板 -> 网络和 Internet -> 网络和共享中心 -> 更改适配器设置 -> 以太网 -> 属性 -> Internet 协议版本4 (TCP/IPv4) -> 属性 -> 使用 DigitalOcean 的 Networking 中的信息配置好 ip 地址，并自定义 DNS 服务器地址：
 
 ```bash
 PUBLIC IPV4 ADDRESS
@@ -197,7 +197,33 @@ SUBNET MASK
 
 完成，使用 RDP 客户端开始使用 Windows。
 
-> \[!TIP\] 此电脑 -&gt; 右键属性 -&gt; 远程设置 -&gt; 取消框选"仅允许运行使用网络级别身份验证的远程桌面的计算机连接\(建议\)"
+> \[!TIP] 此电脑 -> 右键属性 -> 远程设置 -> 取消框选"仅允许运行使用网络级别身份验证的远程桌面的计算机连接(建议)"
+
+#### Oracle 甲骨文
+
+参考：[oracle 一键dd - localhost](https://hostloc.com/thread-593715-1-1.html)
+
+```
+wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd 'http://d.nat.ee/win/lite/winsrv2012r2-data-x64-cn/winsrv2012r2-data-x64-cn-efi.vhd.gz'
+```
+
+DD包来源：[d.nat.ee](http://d.nat.ee)
+
+```
+说明：
+DD文件: winsrv2012r2-data-x64-cn-efi.vhd.gz
+注意：此包仅适合支持Uefi启动的VPS/独服，例如 甲骨文(Oracle)
+大小: (1.97G)2126029428 字节
+MD5: 3FE85F6CC030791175112E86E20959FC
+SHA1: E6BC264BD2CF1BD3520BE8878E7095A165DABF25
+CRC32: 26998264
+账户：Administrator
+密码：nat.ee
+EFI分区默认分配：300MB
+支持：部署安装时，自动扩展硬盘。
+默认：无人值守，自动安装应答。
+默认：开启远程桌面，端口：3389
+```
 
 ### `iptables` 的使用
 
@@ -364,7 +390,7 @@ wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6
 
 [申请SSL证书保姆级教程，包括FreeSSL申请、Acme脚本申请等方式](https://www.v2rayssr.com/ssl.html)
 
-[Debian10手动使用acme.sh脚本申请证书](https://www.zhizhuzi.org/2021/07/29/debian10%e6%89%8b%e5%8a%a8%e4%bd%bf%e7%94%a8acme-sh%e8%84%9a%e6%9c%ac%e7%94%b3%e8%af%b7%e8%af%81%e4%b9%a6/)
+[Debian10手动使用acme.sh脚本申请证书](https://www.zhizhuzi.org/2021/07/29/debian10%E6%89%8B%E5%8A%A8%E4%BD%BF%E7%94%A8acme-sh%E8%84%9A%E6%9C%AC%E7%94%B3%E8%AF%B7%E8%AF%81%E4%B9%A6/)
 
 安装 ACME：
 
@@ -372,7 +398,7 @@ wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/2.6/nf_2.6
 curl https://get.acme.sh | sh
 ```
 
-由于 acme.sh 现在使用 ZeroSSL 作为默认 CA，所以首先注册 [ZeroSSL](https://zerossl.com/)。（参考：[ZeroSSL.com CA](https://github.com/acmesh-official/acme.sh/wiki/ZeroSSL.com-CA)）
+由于 acme.sh 现在使用 ZeroSSL 作为默认 CA，所以首先注册 [ZeroSSL](https://zerossl.com)。（参考：[ZeroSSL.com CA](https://github.com/acmesh-official/acme.sh/wiki/ZeroSSL.com-CA)）
 
 ```bash
 ~/.acme.sh/acme.sh --register-account -m yourZeroSSLmail@example.com
@@ -392,7 +418,7 @@ curl https://get.acme.sh | sh
 
 设置 Cloudflare API 令牌：
 
-cloudflare 概述界面 -&gt; 获取您的API令牌 -&gt; API 密钥 -&gt; Global API Key 查看 -&gt; 复制 API 密钥
+cloudflare 概述界面 -> 获取您的API令牌 -> API 密钥 -> Global API Key 查看 -> 复制 API 密钥
 
 ```bash
 export CF_Key="API 密钥"
@@ -422,7 +448,7 @@ export CF_Email="CF 邮箱"
 
 前面证书生成以后, 接下来需要把证书 copy 到真正需要用它的地方。
 
-注意，默认生成的证书都放在安装目录下：~/.acme.sh/， 请不要直接使用此目录下的文件, 例如：不要直接让 nginx/apache 的配置文件使用这下面的文件。 这里面的文件都是内部使用，而且目录结构可能会变化。
+注意，默认生成的证书都放在安装目录下：\~/.acme.sh/， 请不要直接使用此目录下的文件, 例如：不要直接让 nginx/apache 的配置文件使用这下面的文件。 这里面的文件都是内部使用，而且目录结构可能会变化。
 
 正确的使用方法是使用 `–installcert` 命令，并指定目标位置，然后证书文件会被copy到相应的位置。
 
@@ -466,50 +492,50 @@ systemctl disable firewalld.service    # 禁止防火墙开机自启
 
 来源：[安装并配置 xrdp 以在 Ubuntu 上使用远程桌面](https://docs.microsoft.com/zh-cn/azure/virtual-machines/linux/use-remote-desktop)
 
-以下示例在 Ubuntu 18.04 LTS VM 上安装轻型 [xfce4](https://www.xfce.org/) 桌面环境。 其他发行版的命令略有不同（例如，使用 `yum` 在 Red Hat Enterprise Linux 上安装并配置适当的 `selinux` 规则，或者使用 `zypper` 在 SUSE 上安装）。
+以下示例在 Ubuntu 18.04 LTS VM 上安装轻型 [xfce4](https://www.xfce.org) 桌面环境。 其他发行版的命令略有不同（例如，使用 `yum` 在 Red Hat Enterprise Linux 上安装并配置适当的 `selinux` 规则，或者使用 `zypper` 在 SUSE 上安装）。
 
-首先，通过 SSH 连接到 VM。 
+首先，通过 SSH 连接到 VM。&#x20;
 
 接下来，使用 `apt` 安装 xfce：
 
-```text
+```
 sudo apt-get update
 sudo apt-get -y install xfce4
 sudo apt install xfce4-session
 ```
 
-安装桌面环境后，请配置远程桌面服务来侦听传入连接。 [xrdp](http://xrdp.org/) 是大多数 Linux 分发版中提供的开源远程桌面协议 \(RDP\) 服务器，可与 xfce 完美配合。 在 Ubuntu VM 上安装 xrdp：
+安装桌面环境后，请配置远程桌面服务来侦听传入连接。 [xrdp](http://xrdp.org) 是大多数 Linux 分发版中提供的开源远程桌面协议 (RDP) 服务器，可与 xfce 完美配合。 在 Ubuntu VM 上安装 xrdp：
 
-```text
+```
 sudo apt-get -y install xrdp
 sudo systemctl enable xrdp
 ```
 
 告诉 xrdp 在启动会话时要使用的桌面环境。 配置 xrdp 以使用 xfce 作为桌面环境：
 
-```text
+```
 echo xfce4-session >~/.xsession
 ```
 
 重新启动 xrdp 服务使更改生效：
 
-```text
+```
 sudo service xrdp restart
 ```
 
 如果在创建 VM 时已为用户帐户创建密码，请跳过此步骤。 如果仅使用 SSH 密钥身份验证，并且未设置本地帐户密码，请在使用 xrdp 之前指定密码以登录到 VM。 xrdp 无法接受使用 SSH 密钥进行身份验证。 以下示例为用户帐户 _azureuser_ 指定密码：
 
-```text
+```
 sudo passwd azureuser
 ```
 
 指定密码不会将 SSHD 配置更新为允许密码登录（如果当前不允许）。 从安全角度看，可能想要使用基于密钥的身份验证通过 SSH 隧道连接到 VM，并连接到 xrdp。 如果是这样，请跳过以下创建网络安全组规则的步骤，以允许远程桌面流量。
 
-若要允许远程桌面流量到达 Linux VM，需要创建网络安全组规则以允许端口 3389 上的 TCP 访问 VM。 
+若要允许远程桌面流量到达 Linux VM，需要创建网络安全组规则以允许端口 3389 上的 TCP 访问 VM。&#x20;
 
-以下示例在端口 _3389_ 上使用 [az vm open-port](https://docs.microsoft.com/zh-cn/cli/azure/vm#az_vm_open_port) 创建网络安全组规则。 使用 Azure CLI（而不是与 VM 的 SSH 会话），打开以下网络安全组规则：
+以下示例在端口 _3389_ 上使用 [az vm open-port](https://docs.microsoft.com/zh-cn/cli/azure/vm#az\_vm\_open\_port) 创建网络安全组规则。 使用 Azure CLI（而不是与 VM 的 SSH 会话），打开以下网络安全组规则：
 
-```text
+```
 az vm open-port --resource-group myResourceGroup --name myVM --port 3389
 ```
 
@@ -523,7 +549,7 @@ sudo apt-get install firefox
 
 来源：[甲骨文ARM安装带声音的RDP远程Linux桌面](https://hostloc.com/thread-871447-1-1.html)
 
-> \[!NOTE\] 本脚本暂只支持Ubuntu20.
+> \[!NOTE] 本脚本暂只支持Ubuntu20.
 >
 > 仅在ARM架构进行常规测试,不保证完全可用,请提前做好回滚准备!
 >
@@ -538,7 +564,7 @@ wget https://gist.githubusercontent.com/flyqie/60a005535afc0b5d45255619299b9630/
 sudo reboot
 ```
 
-> \[!TIP\]待重启后即可通过SSH隧道访问,如需公网访问请自行开放防火墙.
+> \[!TIP]待重启后即可通过SSH隧道访问,如需公网访问请自行开放防火墙.
 >
 > RDP Port: 3389
 >
@@ -556,17 +582,17 @@ Github Gist链接: [https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9
 
 #### dns-change-hostmsu
 
-来源：[hostmsu](https://www.hostmsu.ru/)
+来源：[hostmsu](https://www.hostmsu.ru)
 
 ```bash
 wget -N --no-check-certificate https://www.hostmsu.ru/modules/addons/stream_unblock/library/shell/dns-change.sh && chmod +x dns-change.sh && ./dns-change.sh 103.149.46.148
 ```
 
-> \[!TIP\] 如果想恢复备份，可在执行脚本文件时使用参数 `restore`
+> \[!TIP] 如果想恢复备份，可在执行脚本文件时使用参数 `restore`
 
 ### windows server 中 openssh 使用
 
-参考：[windows server 2012 R2 安装 openssh](https://blog.csdn.net/weixin_42819452/article/details/115087464)
+参考：[windows server 2012 R2 安装 openssh](https://blog.csdn.net/weixin\_42819452/article/details/115087464)
 
 #### openssh 安装
 
@@ -610,7 +636,7 @@ sudo apt install python3-pip
 
 #### 升级 pip
 
-```text
+```
 python -m pip install --upgrade pip
 ```
 
@@ -618,13 +644,13 @@ python -m pip install --upgrade pip
 
 通过运行以下命令来验证系统中是否安装了Python 3：
 
-```text
+```
 python3 -V
 ```
 
 输出应如下所示：
 
-```text
+```
 Python 3.6.5
 ```
 
@@ -632,7 +658,7 @@ Python 3.6.5
 
 我们先安装提供`venv`模块的`python3-venv`软件包。
 
-```text
+```
 sudo apt install python3-venv
 # 或其他版本 python 环境
 sudo apt install python3.9-venv
@@ -642,7 +668,7 @@ sudo apt install python3.9-venv
 
 切换到要存储Python 3虚拟环境的目录。 在目录中，运行以下命令来创建新的虚拟环境：
 
-```text
+```
 python3 -m venv my-project-env
 # 或其他版本 python 环境
 python3.9 -m venv my-project-env
@@ -652,13 +678,13 @@ python3.9 -m venv my-project-env
 
 要开始使用此虚拟环境，您需要通过运行`activate`脚本将其激活：
 
-```text
+```
 source my-project-env/bin/activate
 ```
 
 一旦激活，虚拟环境的bin目录将添加到[`$PATH`](https://www.myfreax.com/how-to-add-directory-to-path-in-linux/)变量的开头。 此外，您的Shell提示符也会更改，并且会显示您当前正在使用的虚拟环境的名称。 在我们的例子中是`my-project-env`：
 
-```text
+```
 $ source my-project-env/bin/activate
 (my-project-env) $
 ```
@@ -671,29 +697,29 @@ $ source my-project-env/bin/activate
 
 第一步是使用Python包管理器pip安装模块：
 
-```text
+```
 pip install requests
 ```
 
 要验证安装，您可以尝试导入模块：
 
-```text
+```
 python -c "import requests"
 ```
 
 如果导入模块没有错误，则说明安装成功。
 
-在此示例中，我们将使用[ httpbin.org ](https://httpbin.org/)网站，该网站提供了简单的HTTP Request响应服务以打印所有标题条目。
+在此示例中，我们将使用[ httpbin.org ](https://httpbin.org)网站，该网站提供了简单的HTTP Request响应服务以打印所有标题条目。
 
 打开您的[文本编辑器](https://www.myfreax.com/how-to-install-sublime-text-3-on-ubuntu-18-04/)，然后创建一个新文件：
 
-```text
+```
 nano testing.py
 ```
 
 将以下内容粘贴到文件中：
 
-```text
+```
 import requests
 
 r = requests.get('http://httpbin.org/get')  
@@ -704,19 +730,19 @@ print(r.headers)
 
 我们现在可以通过输入以下内容来运行脚本：
 
-```text
+```
 python testing.py
 ```
 
 脚本将打印所有标题条目的字典，如下所示：
 
-```text
+```
 {'Connection': 'keep-alive', 'Server': 'gunicorn/19.9.0', 'Date': 'Tue, 18 Sep 2018 16:50:03 GMT', 'Content-Type': 'application/json', 'Content-Length': '266', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Credentials': 'true', 'Via': '1.1 vegur'}
 ```
 
 完成工作后停用虚拟环境，只需键入`deactivate`，您将返回到常规shell。
 
-```text
+```
 deactivate
 ```
 
@@ -732,15 +758,15 @@ deactivate
 
 `pip install pillow`
 
-> \[!NOTE\] 若不安装会出现以下错误： `telethon.errors.rpcerrorlist.PhotoInvalidDimensionsError: The photo dimensions are invalid (hint:`pip install pillow`for`send\_file`to resize images) (causedby SendMediaRequest)`
+> \[!NOTE] 若不安装会出现以下错误： `telethon.errors.rpcerrorlist.PhotoInvalidDimensionsError: The photo dimensions are invalid (hint:`pip install pillow`for`send\_file`to resize images) (causedby SendMediaRequest)`
 
 **安装 ffmpeg**
 
-> \[!NOTE\] 上传视频时若没有 ffmpeg 环境，上传时会没有预览图，同时可能出现错误：`ffmpeg command is not available`
+> \[!NOTE] 上传视频时若没有 ffmpeg 环境，上传时会没有预览图，同时可能出现错误：`ffmpeg command is not available`
 
 安装方法： 参考：[How to Install FFmpeg on Windows](http://blog.gregzaal.com/how-to-install-ffmpeg-on-windows/)
 
-* [官网](http://ffmpeg.org/)下载 ffmpeg
+* [官网](http://ffmpeg.org)下载 ffmpeg
 * 压缩包解压后重命名文件夹为 `ffmpeg` ，若不重命名，后续添加到系统环境变量会出问题
 * 将文件夹的 bin 目录（例：`C:\ffmpeg\bin`）添加到系统环境变量 path 中
 * 终端执行 `ffmpeg -version` 验证是否安装成功
@@ -753,9 +779,9 @@ deactivate
 
 安装好后终端执行 `telegram-upload` 进行验证
 
-> \[!IMPORTANT\] 在某些环境中，使用 pip 安装后 cmd 无法识别 `telegram-upload` 命令，原因是 `telegram-upload` 没有被安装到 `...\Python39\Scripts\` 路径中，而是被安装到了 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 路径中，将 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 添加到 path 环境变量即可（该路径在执行 `pip uninstall telegram-upload` 时会出现）
+> \[!IMPORTANT] 在某些环境中，使用 pip 安装后 cmd 无法识别 `telegram-upload` 命令，原因是 `telegram-upload` 没有被安装到 `...\Python39\Scripts\` 路径中，而是被安装到了 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 路径中，将 `C:\Users\username\AppData\Roaming\Python\Python39\Scripts` 添加到 path 环境变量即可（该路径在执行 `pip uninstall telegram-upload` 时会出现）
 >
-> \[!TIP\] Linux 中 使用 `sudo cp /home/USERNAME/.local/bin/telegram-upload /usr/local/bin/` 可以避免设置环境变量
+> \[!TIP] Linux 中 使用 `sudo cp /home/USERNAME/.local/bin/telegram-upload /usr/local/bin/` 可以避免设置环境变量
 
 #### 使用 telegram-upload
 
@@ -763,5 +789,4 @@ deactivate
 telegram-upload --to @CHATNAME --directories recursive --caption "" --large-files split PATH
 ```
 
-test 
-
+test&#x20;
