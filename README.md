@@ -205,6 +205,15 @@ SUBNET MASK
 
 <mark style="color:red;">注意：dd 前先在 Oracle 机器面板中更改子网中的安全列表。</mark>
 
+root用户下，安装运行库：
+
+```
+apt-get update
+apt-get install -y xz-utils openssl gawk file
+```
+
+dd 脚本：
+
 ```
 wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd 'http://d.nat.ee/win/lite/win7-ent-sp1-x64-cn/win7-ent-sp1-x64-cn-efi.vhd.gz'
 ```
