@@ -285,6 +285,16 @@ DD包自带 nat.cmd 在系统盘根目录，是用来给VPS服务器设置静态
 除非VPS商家修改主机KVM参数才能识别。
 ```
 
+#### DD 后系统激活
+
+参考：[KMS服务,一句命令激活windows/office!](https://zhuanlan.zhihu.com/p/81561582)
+
+```bash
+# 使用管理员权限运行cmd执行
+slmgr /skms kms.03k.org
+slmgr /ato
+```
+
 ### `iptables` 的使用
 
 #### 安装 `iptables`
@@ -849,4 +859,4 @@ deactivate
 telegram-upload --to @CHATNAME --directories recursive --caption "" --large-files split PATH
 ```
 
-test&#x20;
+
