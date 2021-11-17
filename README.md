@@ -201,28 +201,79 @@ SUBNET MASK
 
 #### Oracle 甲骨文
 
-参考：[oracle 一键dd - localhost](https://hostloc.com/thread-593715-1-1.html)
+参考：localhost
+
+<mark style="color:red;">注意：dd 前先在 Oracle 机器面板中更改子网中的安全列表。</mark>
 
 ```
-wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd 'http://d.nat.ee/win/lite/winsrv2012r2-data-x64-cn/winsrv2012r2-data-x64-cn-efi.vhd.gz'
+wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd 'http://d.nat.ee/win/lite/win7-ent-sp1-x64-cn/win7-ent-sp1-x64-cn-efi.vhd.gz'
 ```
 
-DD包来源：[d.nat.ee](http://d.nat.ee)
+DD包来源：[http://d.nat.ee/?win/lite/win7-ent-sp1-x64-cn](http://d.nat.ee/?win/lite/win7-ent-sp1-x64-cn)
 
 ```
 说明：
-DD文件: winsrv2012r2-data-x64-cn-efi.vhd.gz
-注意：此包仅适合支持Uefi启动的VPS/独服，例如 甲骨文(Oracle)
-大小: (1.97G)2126029428 字节
-MD5: 3FE85F6CC030791175112E86E20959FC
-SHA1: E6BC264BD2CF1BD3520BE8878E7095A165DABF25
-CRC32: 26998264
+DD文件: win7-ent-sp1-x64-cn-efi.vhd.gz
+注意：此包仅适合支持Uefi启动的VPS，例如 甲骨文(Oracle)
+大小: (1.39G)1494465970 字节
+MD5: 829ab43487e005d6493d5fb687768a79
+SHA1: 2d9a3bf2a60c8d1df199b24d83fb91854636f367
 账户：Administrator
 密码：nat.ee
 EFI分区默认分配：300MB
 支持：部署安装时，自动扩展硬盘。
-默认：无人值守，自动安装应答。
+默认：无人值守，自动安装应答安装。
 默认：开启远程桌面，端口：3389
+
+漏洞补丁更新到2020年1月，累积重要更新
+
+系统最低要求：
+CPU => 1核
+内存 => 512M
+硬盘 => 5G
+
+系统建议配置：
+CPU => 2核
+内存 => 2G
+硬盘 => 15G
+
+修改：
+保留 NET(2-3-3.5)环境，可自行安装到更高版本！
+保留 Wifi
+防火墙 开启PING，禁用TCP/UDP高危端口:135 137 138 139 445
+支持 KVM/XEN/Hyper-V 虚拟化
+支持 Uefi/NVMe/USB3.0
+更新 IE至IE11
+更新 支持RDP8.1远程桌面，可以使用UDP模式连接。
+深度精简 功能组件/注册表优化/组策略优化/服务优化
+
+系统文件展开后3.83G左右
+(默认开启虚拟内存，实际大于此3.83G，由于虚拟内存文件占用)
+纯净 精简 无添加 全新安装 需自行KMS激活
+
+KMS激活：
+以管理员身份运行CMD命令窗口
+输入1：slmgr /skms KMS服务器地址
+输入2：slmgr /ato
+
+此版本为深度精简，功能组件和系统更新均可用。
+
+注意：【首次进入，请先使用tool.cmd脚本修改远程桌面端口和用户密码】
+
+tool.cmd 在桌面，用来修改远程桌面端口和用户密码的。
+重启按钮 在桌面，由于远程桌面无法使用开始菜单的重启功能，添加一个有效改善。
+
+DD包自带 nat.cmd 在系统盘根目录，是用来给VPS服务器设置静态IP网关的，
+若你的VPS服务器需要，请在DD完成，挂载进去修改此脚本，
+无论你是否设置，安装完成进入桌面后此脚本都会自动删除。
+
+
+关于远程桌面RDP8.1，你本地的系统要支持rdp8.0以上，才会连接更流畅。
+早期的xp 2003 2008 Win7是没有支持的，Win8 Win10 以上默认支持。
+至于Win7 sp1，可以打补丁支持到rdp8.1。
+
+关于部分KVM的VPS用户无法识别2核心以上，这个是Windows 7 的硬伤，无法修复，原版也一样。家用版本就是这样，换 windows server 2008 r2 可解决。
+除非VPS商家修改主机KVM参数才能识别。
 ```
 
 ### `iptables` 的使用
