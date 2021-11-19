@@ -634,7 +634,7 @@ wget https://gist.githubusercontent.com/flyqie/60a005535afc0b5d45255619299b9630/
 sudo reboot
 ```
 
-> \[!TIP]待重启后即可通过SSH隧道访问,如需公网访问请自行开放防火墙.
+> \[!TIP]待重启后即可通过 SSH 隧道访问，如需公网访问请自行开放防火墙，参考：https://github.com/s1mcode/scripts-summary#%E9%98%B2%E7%81%AB%E5%A2%99%E7%9B%B8%E5%85%B3
 >
 > RDP Port: 3389
 >
