@@ -859,4 +859,414 @@ deactivate
 telegram-upload --to @CHATNAME --directories recursive --caption "" --large-files split PATH
 ```
 
+## Ubuntu 配置 JavaWeb 运行环境
+### 用户设置
+
+添加用户：
+```bash
+# 添加用户
+useradd itcast
+# 设置用户口令
+passwd itcast
+```
+
+把普通用户 itcast 增加到 sudo 组：
+```bash
+# 切换到root用户
+su
+# 添加sudo权限
+usermod -G sudo itcast 
+# /etc/sudoers文件默认是只读的，对root来说也是，因此需先添加sudoers文件的写权限
+chmod u+w /etc/sudoers
+# 修改 /etc/sudoers 文件
+vim /etc/sudoers
+```
+修改文件如下：
+
+```bash
+root ALL=(ALL) ALL
+itcast ALL=(ALL) ALL # 添加
+```
+
+撤销sudoers文件写权限：
+
+```bash
+chmod u-w /etc/sudoers
+```
+
+#### 安装 MySQL 5.6.48
+
+下载：
+```bash
+# /home/itcast/develop 目录下, 创建 mysql 文件夹
+cd /home/itcast/develop
+mkdir mysql
+cd mysql
+
+# 选择版本后下载：https://downloads.mysql.com/archives/community/
+wget https://downloads.mysql.com/archives/get/p/23/file/mysql-5.6.48-linux-glibc2.12-x86_64.tar.gz
+```
+
+解压：
+
+```bash
+tar -zxvf mysql-5.6.48-linux-glibc2.12-x86_64.tar.gz
+```
+
+安装所需依赖：
+
+```bash
+sudo apt-get install libaio1
+sudo apt-get install libncurses5 libstdc++6
+# 32位使用
+# sudo apt-get install lib32ncurses5 lib32stdc++6
+```
+
+开始安装：
+
+```bash
+# 切换回root用户
+su
+# 添加一个组，名字叫 mysql
+groupadd mysql
+# 添加一个用户 mysql 到 mysql 组中
+useradd -r -g mysql mysql
+# 复制准备工作中解压的 mysql 包到 /usr/local
+cp /home/itcast/develop/mysql/mysql-5.6.48-linux-glibc2.12-x86_64 -r /usr/local
+# 进入/usr/local目录
+cd /usr/local
+# 给上边复制的解压文件夹添加软链接，起名为mysql
+ln -s mysql-5.6.48-linux-glibc2.12-x86_64 mysql
+# 进入mvsql目录
+cd mysql
+# 设置mysql(软连接mysql指向上面解压的文件夹)目录的拥有者和所属组为mysql(刚才创建过的用户和组名)
+chown -R mysql .
+chgrp -R mysql .
+# 执行mysqL的安装脚本
+scripts/mysql_install_db --user=mysql
+# 重新设置mysql的目录拥有者为root
+chown -R root .
+# 设置data目录的拥有者为mysql
+chown -R mysql data
+# 复制配置文件
+cp support-files/my-default.cnf /etc/my.cnf
+# 启动MySQL
+bin/mysqld_safe --user=mysql & # 此时无法输入，执行 pwd 恢复输入
+# 初始化root用户密码
+bin/mysqladmin -u root password 'root_password'
+# 复制 mysql.server 脚本
+cp support-files/mysql.server /etc/init.d/mysql.server
+# 给mysql命令配置软连接(不想配置环境变量可以这么干,给MySQL配置环境变量就不需要了)，可以全局使用 sql 命令
+ln -s /usr/local/mysql/bin/mysql /usr/local/bin/mysql
+```
+
+开机自启：
+
+```bash
+update-rc.d -f mysql.server defaults
+```
+
+取消开机自启：
+
+```bash
+update-rc.d -f mysql.server remove
+```
+
+运行MySQL,进行测试：
+
+```bash
+mysql -uroot -p
+show databases;
+use mysql;
+show tables;
+exit
+```
+
+查看MySQL状态、启动、关闭、重启mysql服务:
+
+```bash
+service mysql.server [status|start|stop|restart]
+```
+
+#### 安装 JDK1.7
+
+下载安装：
+
+```bash
+# https://www.oracle.com/java/technologies/javase/javase7-archive-downloads.html
+# 找到 jdk-7u75-linux-x64.tar.gz 下载
+cd /home/itcast/develop/jdk
+# 在本地下载后再上传到服务器
+
+# 解压
+tar -zxvf jdk-7u75-linux-x64.tar.gz
+# 将解压出的文件夹复制到 /usr/local/ 并重命名为 jdk1.7
+mv jdk1.7.0_75/ /usr/local/jdk1.7
+```
+
+配置环境变量：
+
+```bash
+vim /etc/profile
+
+# 末尾添加 
+JAVA_HOME=/usr/local/jdk1.7
+CLASSPATH=.:$JAVA_HOME/lib.tools.jar
+PATH=$JAVA_HOME/bin:$PATH
+export JAVA_HOME CLASSPATH PATH
+
+# 使更改的配置立即生效
+source /etc/profile
+```
+
+验证安装：
+
+```bash
+# 查看JDK版本信息，如果显示出 1.7.0_75 证明配置成功
+java -version
+```
+
+#### 安装 Tomcat
+参考：[如何在 Ubuntu 20.04 上安装 Tomcat 9](https://www.itcoder.tech/posts/how-to-install-tomcat-9-on-ubuntu-20-04/)
+
+##### 安装并配置好JDK
+安装配置过程省略。
+通过检查 Java 版本来验证它：
+
+```bash
+java -version
+```
+
+
+##### 创建一个系统用户
+以 root 用户运行 Tomcat 有一个安全风险。我们将会创建一个系统用户和用户组，其主目录为/opt/tomcat。我们将会使用这个用户来运行 Tomcat 服务。
+```bash
+sudo useradd -m -U -d /opt/tomcat -s /bin/false tomcat
+```
+
+##### 下载并安装 Tomcat
+```bash
+cd /home/itcast/develop/
+mkdir tomcat
+cd tomcat/
+# 下载： https://tomcat.apache.org/download-80.cgi 中 Binary Distributions -> Core 下的 tar.gz 文件
+wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.73/bin/apache-tomcat-8.5.73.tar.gz  
+```
+
+解压 tar 文件到/opt/tomcat目录：
+```bash
+sudo tar -xf apache-tomcat-8.5.73.tar.gz -C /opt/tomcat
+```
+
+Tomcat 会定期更新 安全补丁和新功能。想要更好地升级版本和更新，我们将会创建一个符号链接，称为latest,指向 Tomcat 安装目录:
+```bash
+cd /opt/tomcat/
+sudo ln -s ./apache-tomcat-8.5.73/ ./latest
+```
+
+稍后，当升级 Tomcat 时，解压新的版本，并且修改符号链接，指向它。
+
+前面创建的系统用户必须对 tomcat 安装目录有访问权限。修改目录归属到用户和用户组 tomcat：
+```bash
+sudo chown -R tomcat: /opt/tomcat/
+```
+
+在 Tomcat bin目录下的 shell 脚本必须可执行：
+
+```bash
+sudo sh -c 'chmod +x /opt/tomcat/latest/bin/*.sh'
+```
+
+##### 创建 SystemD 单元文件
+与使用 shell 脚本来启动和停止 Tomcat 服务器相比，我们将会将它作为服务来运行。
+
+打开你的文本编辑器，并且在/etc/systemd/system/目录下创建一个 tomcat.service 单元文件。
+```bash
+sudo vim /etc/systemd/system/tomcat.service
+```
+
+粘贴下面的配置文件（如果你的 Java 安装路径不一样，请修改`JAVA_HOME`环境变量。）：
+```bash
+[Unit]
+Description=Tomcat 8 servlet container
+After=network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+Environment="JAVA_HOME=/usr/local/jdk1.7"
+Environment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom -Djava.awt.headless=true"
+
+Environment="CATALINA_BASE=/opt/tomcat/latest"
+Environment="CATALINA_HOME=/opt/tomcat/latest"
+Environment="CATALINA_PID=/opt/tomcat/latest/temp/tomcat.pid"
+Environment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"
+
+ExecStart=/opt/tomcat/latest/bin/startup.sh
+ExecStop=/opt/tomcat/latest/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+
+保存并且关闭文件，通知 systemd 一个新的单元文件存在：
+
+```bash
+sudo systemctl daemon-reload
+```
+
+启用并且启动 Tomcat 服务：
+```bash
+sudo systemctl enable --now tomcat
+```
+
+检查服务状态：
+```bash
+sudo systemctl status tomcat
+# 按 q 退出查看
+```
+
+输出应该显示 Tomcat 服务器已经启用，并且运行了：
+
+```bash
+● tomcat.service - Tomcat 8 servlet container
+     Loaded: loaded (/etc/systemd/system/tomcat.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2021-11-27 08:01:20 UTC; 1min 6s ago
+    Process: 108242 ExecStart=/opt/tomcat/latest/bin/startup.sh (code=exited, status=0/SUCCESS)
+   Main PID: 108249 (java)
+      Tasks: 18 (limit: 2344)
+     Memory: 118.7M
+     CGroup: /system.slice/tomcat.service
+             └─108249 /usr/local/jdk1.7/bin/java -Djava.util.logging.config.file=/opt/tomcat/latest/conf/logging.properties -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.security.egd=file:///dev/urandom -Djava.aw>
+
+Nov 27 08:01:20 ubuntu-s-1vcpu-2gb-intel-sfo3-01 systemd[1]: Starting Tomcat 8 servlet container...
+Nov 27 08:01:20 ubuntu-s-1vcpu-2gb-intel-sfo3-01 startup.sh[108242]: Tomcat started.
+Nov 27 08:01:20 ubuntu-s-1vcpu-2gb-intel-sfo3-01 systemd[1]: Started Tomcat 8 servlet container.
+```
+
+你可以 像其他 systemd 服务一样 启动，停止和重启 Tomcat：
+
+```bash
+sudo systemctl start tomcat
+sudo systemctl stop tomcat
+sudo systemctl restart tomcat
+```
+
+##### 配置防火墙
+
+如果你的服务器被防火墙保护，并且你想从外面访问你的Tomcat，你需要打开8080端口。
+
+使用下面的命令打开必要的端口：
+
+```bash
+sudo ufw allow 8080/tcp
+```
+
+通常，当在生产环境运行 Tomcat 时，你应该是使用一个负载均衡，或者反向代理服务器。这是仅仅允许从你的本地网络访问`8080`端口的最佳实践。
+
+##### 配置 Tomcat 网页管理界面
+略。
+
+##### 测试 Tomcat 安装
+打开你的浏览器，输入：http://<your_domain_or_IP_address>:8080
+假设安装成功，会出现 Tomcat 界面。
+
+Tomcat 网页应用管理在：
+http://<your_domain_or_IP_address>:8080/manager/html
+
+Tomcat 虚拟主机管理在：
+ http://<your_domain_or_IP_address>:8080/host-manager/html
+
+#### 安装 Redis
+
+ubuntu安装redis，可以通过源码make编译安装，也可以通过apt-get安装，apt-get安装更加简便。
+本文采用的就是apt-get安装。
+
+##### 安装
+
+```bash
+sudo apt-get install redis-server
+```
+
+##### redis配置
+
+修改redis.conf。该文件路径默认安装地址为：/etc/redis/redis.conf
+
+打开文件。（文件内容太多，查找不方便。在normal模式下按下/即可进入查找模式。vim命令行模式下查找 ：/** 。就可以查找了** 。** 就是我们需要查找的内容。比如：/127.0.0.1 就可以快速查找到127.0.0.1。，输入要查找的字符串并按下回车。Vim会跳转到第一个匹配。按下n查找下一个，按下N查找上一个。）
+
+修改第一处：注释掉这个 bind 127.0.0.1，就能远程访问redis。
+修改第二处：修改redis.conf将daemonize属性改为yes。这样redis-server就能后台运行了。
+修改第三处：如果要给redis设置密码，就需要取消下图这块的注释，引入redis密码,设置为123456。
+
+在文件中，找到supervised指令。 该指令允许您声明一个init系统来管理Redis作为服务，从而为您提供对其操作的更多控制。 受supervised指令默认设置为no 。 由于您正在运行使用systemd init系统的Ubuntu，请将其更改为systemd。
+
+修改后，保存。重启redis服务：
+
+```bash
+sudo service redis restart
+```
+
+#### Redis 服务端控制
+
+启动 redis 服务：
+
+```bash
+sudo service redis start
+```
+
+查看 Redis 的运行状态：
+
+```bash
+sudo systemctl status redis
+```
+
+关闭 redis 服务：
+```bash
+sudo service redis stop
+```
+
+重启 redis 服务：
+
+
+```bash
+sudo service redis restart
+```
+
+##### redis 客户端连接
+在命令行中输入如下命令来登陆进 redis 客户端：
+```bash
+redis-cli
+# 如果设置了密码： redis-cli -a your_password
+```
+
+#### 查看端口使用状态
+
+```bash
+apt-get install net-tools
+netstat -ntpl
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
