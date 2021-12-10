@@ -824,10 +824,15 @@ vnStat 是一款开源的网络流量统计工具，可以方便的查看当天�
 
 官网地址：https://humdi.net/vnstat/
 
+使用参考：https://www.jinnsblog.com/2020/08/vnstat-network-traffic-monitor.html
+
 ##### 安装
 `sudo apt-get install vnstat`
 
 ##### 使用
+
+查看vps网卡名称:
+`ip a`
 
 假设网卡名为 eth0，该配置在 /etc/vnstat.conf 中，安装结束后初始化数据库: 
 `sudo vnstat -u -i eth0`
