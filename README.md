@@ -1092,6 +1092,47 @@ python testing.py
 deactivate
 ```
 
+### 网络监控
+
+#### vnstat
+
+vnStat 是一款开源的网络流量统计工具，可以方便的查看当天，当月流量统计。
+
+官网地址：https://humdi.net/vnstat/
+
+使用参考：https://www.jinnsblog.com/2020/08/vnstat-network-traffic-monitor.html
+
+##### 安装
+`sudo apt-get install vnstat`
+
+##### 使用
+
+查看vps网卡名称:
+`ip a`
+
+假设网卡名为 eth0，该配置在 /etc/vnstat.conf 中，安装结束后初始化数据库: 
+`sudo vnstat -u -i eth0`
+
+添加为开机启动: 
+`sudo update-rc.d vnstat enable`
+
+直接输入 vnstat:
+
+```bash
+vnstat -l  # 或者 `--live` 实时流量
+vnstat -h  # 显示小时流量
+vnstat -d  # 显示日流量信息
+vnstat -w  # 显示周流量信息
+vnstat -m  # 显示月流量信息
+vnstat -t  # 显示流量最高top10天
+```
+
+图形化输出可以使用 vnstati ，将月流量统计图输出到图片:
+
+```bash
+vnstati -i eth0 - -months - -output /dir/month.png
+```
+
 ## 其他脚本
 
 ### telegram-upload
