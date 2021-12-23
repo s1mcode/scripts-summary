@@ -648,6 +648,282 @@ Github Gist链接: [https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9
 
 [https://gist.github.com/rkttu/35ecab5604c9ddc356b0af4644d5a226](https://gist.github.com/rkttu/35ecab5604c9ddc356b0af4644d5a226) [https://gist.github.com/CraigCottingham/fad000cc2ec4678203acf62c4ad2ab23](https://gist.github.com/CraigCottingham/fad000cc2ec4678203acf62c4ad2ab23) [https://github.com/MeowLove/Linux-Remote-Desktop-Environment](https://github.com/MeowLove/Linux-Remote-Desktop-Environment) [https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44](https://github.com/neutrinolabs/pulseaudio-module-xrdp/issues/44)
 
+#### 甲骨文 Ubuntu ARM Gnome
+
+##### 准备
+
+1.甲骨文ARM（为了性能保证系统体验，建议ARM 2核心或更高！）
+2.系统必须得是Ubuntu20.04（甲骨文原版镜像或者DD萌咖大佬的ubuntu20.04最好！原版甲骨文镜像每次开机都要关闭防护墙，很烦！）
+这里宣传一下萌咖大佬的Ubuntu20.04原版DD一键：
+
+```bash
+bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') -u 20.04 -v arm64 --mirror http://archive.ubuntu.com/ubuntu -p "自定义root密码" -port "自定义ssh端口"
+```
+
+3.甲骨文门户面板里的端口建议全开！
+
+##### 安装Ubuntu官方Gnome桌面
+
+接下来做一次更新和升级，执行命令：
+
+```bash
+apt update -y ; apt upgrade -y
+```
+
+升级后设置一下语言：(为了让大家进入图形系统后能够设置中文界面！）
+
+```bash
+dpkg-reconfigure locales
+```
+
+在出现的第一画面里做如下选择，上下键切换，空格键是选择，Tab键可以跳到“OK”上，Enter键确认：
+
+```bash
+选择这两个：
+【*】zh CN.GBK GBK
+【*】zh_CN.UTF-8 UTF-8
+Ok
+```
+
+再进入到第二画面后，同样通过空格键选择中文为默认的语言编码，用Tab键跳到“OK”上回车确认：
+
+```bash
+选中：
+【*】zh_CN.UTF-8
+OK
+```
+
+设置完毕后，重新连接一次服务器，会发现系统支持中文展示了。
+
+下面我们开始真正的桌面环境的安装，这里安装ubuntu desktop而不是xfce，原汁原味！执行命令：
+
+```bash
+# screen -R insdesk
+apt install ubuntu-desktop
+```
+
+安装过程耗时较长，耐心等待，直至完成。
+
+完毕后进行Xrdp的安装，提供远程桌面访问的能力，执行以下命令：
+
+```bash
+apt install xrdp -y
+```
+
+Xrdp会安装成服务，可以验证一下：
+
+```bash
+systemctl status xrdp
+```
+
+可以看到红色ERROR这一行信息，如何解决呢？
+
+```bash
+Cannot read private key file/etc/xrdp/key-pem:Permisslon denied
+```
+
+执行以下命令：
+
+```
+adduser xrdp ssl-cert
+systemctl restart xrdp
+systemctl status xrdp
+```
+
+可以看到红色的信息不见了：
+
+```bash
+12月 23 02:03:25 ubuntu xrdp[45134]: (45134)(281473022304272)[INFO ] address [0.0.0.0] port [3389] mode 1
+12月 23 02:03:25 ubuntu xrdp[45134]: (45134)(281473022304272)[INFO ] listening to port 3389 on 0.0.0.0
+12月 23 02:03:25 ubuntu xrdp[45134]: (45134)(281473022304272)[INFO ] xrdp_listen_pp done
+12月 23 02:03:25 ubuntu xrdp[45134]: (45134)(281473022304272)[DEBUG] Closed socket 7 (AF_INET6 :: port 3389)
+12月 23 02:03:25 ubuntu systemd[1]: xrdp.service: Can't open PID file /run/xrdp/xrdp.pid (yet?) after start: Operation not permitted
+12月 23 02:03:26 ubuntu systemd[1]: Started xrdp daemon.
+12月 23 02:03:27 ubuntu xrdp[45148]: (45148)(281473022304272)[INFO ] starting xrdp with pid 45148
+12月 23 02:03:27 ubuntu xrdp[45148]: (45148)(281473022304272)[INFO ] address [0.0.0.0] port [3389] mode 1
+12月 23 02:03:27 ubuntu xrdp[45148]: (45148)(281473022304272)[INFO ] listening to port 3389 on 0.0.0.0
+12月 23 02:03:27 ubuntu xrdp[45148]: (45148)(281473022304272)[INFO ] xrdp_listen_pp done
+```
+
+这样桌面环境和远程服务安装好后，就可以连接到远程桌面。经过反复的测试和实验，使用Windows 10 默认的远程桌面工具mstsc，体验非常卡顿,具体原因具体可以总结一下，就是微软的rdp与Linux的Xrdp进行连接时存在兼容性问题，不要以为纯粹是网络问题，其实甲骨文ARM的性能非常夸张，可以很负责任的告诉大家，甲骨文的这个ARM芯片，相比于X86架构，你很难在消费市场上找到能比他强的，总之性能就是给的实在，具体大家深入体会后就明白了。
+
+##### 安装Linux FRP服务
+
+接下来FRP将会彻底解决远程桌面卡顿的问题，在这里给大家普及一下FRP的运作机制，首先FRP分为客户端frpc和服务端frps，大家只要记住，哪个要做中转机哪个就放服务端，客户端放在ARM上，如果像我这种用甲骨文春川的本来国内直连速度就比较好，那就可以服务端和客户端都放在ARM机器上，这样就相当于ARM本地做了一次端口转发，理解这个逻辑，那么就开始干！
+
+FRP github链接
+https://github.com/fatedier/frp/releases/tag/v0.34.2
+
+大家看对版本，每个版本里都包含frps和frpc，如果大家用的是甲骨文春川，选linux_arm64就行。如果是比如用腾讯云做服务端的话，那么腾讯云是amd64的，甲骨文ARM是arm64的，在丢到各自的机器上时注意版本！！！重要的事情说三遍！别把版本放错了！别把版本放错了！别把版本放错了！再次重申frps是服务端,frpc是客户端。
+
+客户端方面
+1.解压包，把如下文件放到/etc/frp 目录下
+
+```
+frpc
+frpc_full.ini 
+frpc.ini
+```
+
+```
+cd /etc
+wget https://github.com/fatedier/frp/releases/download/v0.34.2/frp_0.34.2_linux_arm64.tar.gz
+tar -zxvf frp_0.34.2_linux_arm64.tar.gz
+mv frp_0.34.2_linux_arm64 frp
+```
+
+2.修改frpc.ini文件
+
+```
+[common]
+server_addr = 127.0.0.1 #如果你就想在ARM机器本地内部做一次转发，就用127.0.0.1，如果你是用腾讯云香港做服务器转发，这里就填腾讯云的IP
+server_port = 7000
+token = 12345678
+
+[13389]
+type = tcp
+remote_port = 13389
+local_ip = 127.0.0.1
+local_port = 3389
+```
+
+3.把systemd文件夹下的frpc.service，放到/etc/systemd/system下。
+设置权限，chmod 754 frpc.service
+设置开机启动即可 systemctl enable frpc.service
+
+```
+cd /etc/frp
+cp ./systemd/frpc.service /etc/systemd/system
+chmod 754 /etc/systemd/system/frpc.service
+systemctl enable frpc.service
+```
+
+4.在/etc/frp/目录下
+
+```
+cd /etc/frp
+cp frpc /usr/bin
+chmod +x /usr/bin/frpc
+systemctl start frpc
+ps -ef|grep frpc
+```
+
+客户端结束
+
+服务端方面
+1.解压包，把如下文件放到/etc/frp 目录下
+
+```
+frps
+frps_full.ini 
+frps.ini
+```
+
+2.修改frps.ini文件（这里为了方便大家不掉坑，我这里直接给出自己已经搭建成功的配置文件给大家，完整覆盖过去）
+
+```bash
+[common]
+bind_addr = 0.0.0.0
+bind_port = 7000
+bind_udp_port = 7001
+kcp_bind_port = 7000
+vhost_http_port = 8080
+vhost_https_port = 8443
+dashboard_addr = 0.0.0.0
+dashboard_port = 7500
+dashboard_user = admin
+dashboard_pwd = 12345678
+log_file = ./frps.log
+log_level = info
+log_max_days = 3
+disable_log_color = false
+token = 12345678
+allow_ports = 13000-14000
+max_pool_count = 5
+max_ports_per_client = 0
+subdomain_host = frps.com
+tcp_mux = true
+```
+
+3.把systemd文件夹下的frps.service，放到/etc/systemd/system下
+设置权限，chmod 754 frps.service
+设置开机启动即可 systemctl enable frps.service
+
+```bash
+cd /etc/frp
+cp ./systemd/frps.service /etc/systemd/system
+chmod 754 /etc/systemd/system/frps.service
+systemctl enable frps.service
+```
+
+4.在/etc/frp/frp_0.34.2_linux_arm64目录下
+
+```bash
+cd /etc/frp/
+cp frps /usr/bin
+chmod +x /usr/bin/frps
+systemctl start frps
+ps -ef|grep frps
+```
+
+完成，结束
+
+至此，1.如果大家是在ARM本机内部做转发的，浏览器输入ARM机器IP地址:7500，进入后找TCP，如果能看到一条记录那就是成功启动FRP了。
+
+2.如果大家是在比如腾讯云机器上做frps的，浏览器输入腾讯云机器IP地址:7500，进入后找TCP，如果能看到一条记录那就是成功启动FRP了。
+
+##### 解决Ubuntu 20.04 安装xrdp, 远程黑屏问题
+
+在Ubuntu 20.04安装xrdp后，使用Mac去连接
+结果发现连接过去之后，一直是黑屏状态。浪费了大半天时间之后，终于解决：
+
+```
+vim /etc/xrdp/startwm.sh
+```
+
+加入文件最后面的session前面
+
+```
+unset DBUS_SESSION_BUS_ADDRESS
+unset XDG_RUNTIME_DIR
+```
+
+看起来像：
+
+```
+if test -r /etc/profile; then
+        . /etc/profile
+fi
+
+unset DBUS_SESSION_BUS_ADDRESS
+unset XDG_RUNTIME_DIR
+
+test -x /etc/X11/Xsession && exec /etc/X11/Xsession
+exec /bin/sh /etc/X11/Xsession
+```
+
+最后重启使配置生效：
+
+```
+sudo systemctl restart xrdp
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### DNS 解锁
 
 #### dns-change-hostmsu
@@ -1248,7 +1524,6 @@ redis-cli
 apt-get install net-tools
 netstat -ntpl
 ```
-
 
 
 
