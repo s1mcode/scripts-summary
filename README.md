@@ -650,6 +650,15 @@ Github Gist链接: [https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9
 
 #### 甲骨文 Ubuntu ARM Gnome
 
+参考：
+
+[Ubuntu]: https://hostloc.com/thread-899918-1-1.html
+[甲骨文ARM]: https://hostloc.com/thread-944424-1-1.html
+[甲骨文ARM远程桌面转发声音]: https://hostloc.com/thread-935349-1-1.html
+[甲骨文ARMUbuntu20.04原版G]: https://live.ikaiche.org/archives/%E7%94%B2%E9%AA%A8%E6%96%87armubuntu2004%E5%8E%9F%E7%89%88gnome%E6%A1%8C%E9%9D%A2frp%E5%86%85%E9%83%A8%E8%BD%AC%E5%8F%91%E6%95%99%E7%A8%8B
+[甲骨文ARMUbuntu20.04原版G]: https://life.ikaiche.org/2021/12/21/6/
+[甲骨文ARM]: https://life.ikaiche.org/2021/12/22/%e7%94%b2%e9%aa%a8%e6%96%87arm-ubuntu20-04-gnome%e8%bf%9c%e7%a8%8b%e6%a1%8c%e9%9d%a2%e5%bc%80%e5%90%af%e5%a3%b0%e9%9f%b3/
+
 ##### 准备
 
 1.甲骨文ARM（为了性能保证系统体验，建议ARM 2核心或更高！）
@@ -872,7 +881,7 @@ ps -ef|grep frps
 
 2.如果大家是在比如腾讯云机器上做frps的，浏览器输入腾讯云机器IP地址:7500，进入后找TCP，如果能看到一条记录那就是成功启动FRP了。
 
-##### 解决Ubuntu 20.04 安装xrdp, 远程黑屏问题
+##### 解决Ubuntu 20.04 安装xrdp后的远程黑屏问题
 
 在Ubuntu 20.04安装xrdp后，使用Mac去连接
 结果发现连接过去之后，一直是黑屏状态。浪费了大半天时间之后，终于解决：
@@ -908,15 +917,262 @@ exec /bin/sh /etc/X11/Xsession
 sudo systemctl restart xrdp
 ```
 
+##### xrdp 配置文件设置
 
+参考： 
 
+[xrdp配置文件详解]: https://blog.csdn.net/yyywxk/article/details/106571336
+[学习ubuntu远程桌面（二）：远程桌面]: https://www.shuzhiduo.com/A/o75NLgRezW/?utm_source=pocket_mylist
+[如何设置重用现有会话的xrdp会话？]: https://ubuntuqa.com/article/1739.html?utm_source=pocket_mylist
+[How]: https://askubuntu.com/questions/133343/how-do-i-set-up-xrdp-session-that-reuses-an-existing-session
 
+1、会话 （session）设置
 
+如果要修改会话 （session） 的设置，可以修改 xrdp 的 `sesman.ini` 配置文件。
+进入 `sesman.ini` 文件的命令为：
 
+```bash
+sudo vim /etc/xrdp/sesman.ini
+```
 
+主要是 [Session] 下进行修改。其中常用的设置有：
 
+- `MaxSessions=10` 代表最大会话数为10，如果要改变最大会话数可以修改这个地方；
+- `KillDisconnected=0` 表示是否立即关闭断开的连接，如果为 1 则表示断开连接后会自动注销，我们如果想要断开后会话进程依旧运行可以设置此处为 0。
+- `IdleTimeLimit=0` 空闲会话时间限制(0为没有限制)。
+- `DisconnectedTimeLimit=0` 断开连接的存活时间(0为没有限制)。
 
+修改后需要重启xrdp服务：
 
+```bash
+sudo systemctl restart xrdp
+```
+
+2、如何设置重用现有xrdp会话
+
+开和编辑xrdp的配置文件：
+
+```bash
+sudo vim /etc/xrdp/xrdp.ini
+```
+
+默认情况下，第一个xrdp会话处理脚本如下所示：
+
+```bash
+[xrdp1]
+name=sesman-vnc
+lib=libvnc.so
+username=ask
+password=ask
+ip=127.0.0.1
+port=-1
+```
+
+重要的一行是`port=-1`，这使得xrdp总是寻找一个可以连接的空闲端口。如果在此处设置固定端口，则xrdp将始终返回并连接到同一会话。我换了我的，所以它看起来像这样：
+
+```bash
+[xrdp1]
+name=customsessionname
+lib=libvnc.so
+username=myusername
+password=ask
+ip=127.0.0.1
+port=5912
+```
+
+只需将`port=-1`更改为`port=5912`即可。
+
+##### xrdp 其他问题
+
+参考：
+
+[Ubuntu]: https://www.its203.com/article/yyywxk/106136196?utm_source=pocket_mylist
+
+1、Tab 键无法使用
+使用时发现Tab 键无法使用，原因是快捷方式被占用，解决方案：
+
+- 直接在远程桌面中设置，打开菜单->设置->窗口管理器，或者在终端中输入xfwm4-settings打开（xfwm4就是xfce4 window manger的缩写）。
+- 选择键盘，可以看到窗口快捷键中动作一列有“切换同一应用程序的窗口”选项。
+- 将该选项的快捷键清除后关闭窗口即可。
+
+缺省的设置，该项的值为 super+制表，制表键就是 Tab键。这样修改后马上可以使用了。
+
+2、在linux中使用firfox出现的问题
+
+中文版显示：`Firefox 已经在运行，但是没有响应。如要打开新窗口，您必须先关闭该 Firefox 进程，或者重新启动您的系统。`
+英文版显示：`Firefox is already running, but is not responding. To open a new window, you must first close the existing Firefox process, or restart your system.`
+解决方法如下：
+在linux的终端输入：
+`firefox -profilemanager`
+回车后会出现一个小窗口让你选择使用哪个 profile 来启动 firefox。首先将当前出错的Profile删除掉，然后新建个即可。
+
+3、当前root用户会话锁屏
+
+新建一个非root用户，并设置密码，以后使用该用户登录xrdp。
+
+##### 甲骨文ARM Ubuntu20.04Gnome远程桌面开启声音
+
+修改ubuntu 默认的源地址
+
+```
+vim /etc/apt/source.list
+```
+
+添加：
+
+```bash
+#deb http://ports.ubuntu.com/ focal main restricted
+#deb http://ports.ubuntu.com/ focal-updates main restricted
+deb http://ports.ubuntu.com/ focal-security main restricted
+# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
+# newer versions of the distribution.
+deb http://ports.ubuntu.com/ focal main restricted
+# deb-src http://archive.ubuntu.com/ubuntu focal main restricted
+## Major bug fix updates produced after the final release of the
+## distribution.
+deb http://ports.ubuntu.com/ focal-updates main restricted
+# deb-src http://archive.ubuntu.com/ubuntu focal-updates main restricted
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team. Also, please note that software in universe WILL NOT receive any
+## review or updates from the Ubuntu security team.
+deb http://ports.ubuntu.com/ focal universe
+# deb-src http://archive.ubuntu.com/ubuntu focal universe
+deb http://ports.ubuntu.com/ focal-updates universe
+# deb-src http://archive.ubuntu.com/ubuntu focal-updates universe
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team, and may not be under a free licence. Please satisfy yourself as to
+## your rights to use the software. Also, please note that software in
+## multiverse WILL NOT receive any review or updates from the Ubuntu
+## security team.
+deb http://ports.ubuntu.com/ focal multiverse
+# deb-src http://archive.ubuntu.com/ubuntu focal multiverse
+deb http://ports.ubuntu.com/ focal-updates multiverse
+# deb-src http://archive.ubuntu.com/ubuntu focal-updates multiverse
+## N.B. software from this repository may not have been tested as
+## extensively as that contained in the main release, although it includes
+## newer versions of some applications which may provide useful features.
+## Also, please note that software in backports WILL NOT receive any review
+## or updates from the Ubuntu security team.
+deb http://ports.ubuntu.com/ focal-backports main restricted universe multiverse
+# deb-src http://archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+deb http://archive.canonical.com/ubuntu focal partner
+deb-src http://archive.canonical.com/ubuntu focal partner
+deb http://ports.ubuntu.com/ubuntu-ports focal-security main restricted
+deb-src http://ports.ubuntu.com/ubuntu-ports focal-security main universe restricted multiverse
+deb http://ports.ubuntu.com/ubuntu-ports focal-security universe
+# deb-src http://ports.ubuntu.com/ubuntu-ports focal-security universe
+deb http://ports.ubuntu.com/ubuntu-ports focal-security multiverse
+# deb-src http://ports.ubuntu.com/ubuntu-ports focal-security multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ focal main universe restricted multiversedeb-src http://ports.ubuntu.com/ubuntu-ports/ focal main universe restricted multiverse #Added by software-properties
+```
+
+安装Pulseaudio所需的所有组件
+
+```bash
+apt-get install software-properties-common -y
+apt-get install git libpulse-dev autoconf m4 intltool dpkg-dev libtool libsndfile-dev libcap-dev libjson-c-dev -y
+apt-get build-dep pulseaudio -y
+apt update
+```
+
+下载Pulseaudio源码
+
+```bash
+apt-get build-dep pulseaudio -y
+apt source pulseaudio
+```
+
+此时cmd输出的最后一行为：
+
+```bash
+W: 由于文件'pulseaudio_13.99.1-1ubuntu3.8.dsc'无法被用户'_apt'访问，已脱离沙盒并提权为根用户来进行下载。 - pkgAcquire::Run (13: 权限不够)
+```
+
+当前文件夹已经多了一个文件夹和几个文件：
+
+```bash
+drwxr-xr-x 15 root root    4096 12月 24 02:47 pulseaudio-13.99.1/
+-rw-r--r--  1 root root  152288 11月 23  2020 pulseaudio_13.99.1-1ubuntu3.8.debian.tar.xz
+-rw-r--r--  1 root root    3685 11月 23  2020 pulseaudio_13.99.1-1ubuntu3.8.dsc
+-rw-r--r--  1 root root 1955840 2月  26  2020 pulseaudio_13.99.1.orig.tar.xz
+```
+
+提权
+
+```bash
+chmod 777 pulseaudio_13.99.1-1ubuntu3.8.dsc
+```
+
+删除Palseaudio源码文件夹
+
+```
+rm -rf pulseaudio-13.99.1
+```
+
+重新下载源码，进入源码目录，配置
+
+```bash
+apt source pulseaudio
+cd pulseaudio-13.99.1
+./configure
+```
+
+克隆仓库
+
+```bash
+cd ../
+git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git
+```
+
+编译
+
+```bash
+cd pulseaudio-module-xrdp
+./bootstrap
+./configure PULSE_DIR="/root/pulseaudio-13.99.1"
+make
+```
+
+安装动态链接库
+
+```bash
+cd src/.libs
+install -t "/var/lib/xrdp-pulseaudio-installer" -D -m 644 *.so
+install -t "/usr/lib/pulse-$pulsever/modules" -D -m 644 *.so
+install -t "/usr/lib/pulse-13.99.1/modules" -D -m 644 *.so
+ls /var/lib/xrdp-pulseaudio-installer
+```
+
+对于root用户想启用pulseaudio的话，还需要以下几行命令，把root添加到pulse（可选）
+
+```
+gpasswd -a root pulse
+gpasswd -a root pulse-access
+```
+
+重启
+
+```bash
+reboot
+```
+
+重启后输入以下命令
+
+```bash
+pulseaudio -k && pulseaudio
+```
+
+等几秒钟再ctrl+c,结束掉，然后输入命令
+
+```bash
+pulseaudio
+```
+
+（注意：如果有报错不用管，别关看声卡变成xrdp sink了没有，试一下声音，看看rdp声音开了没，有声音了直接关掉窗口）每个ubuntu账户都需要走一遍这个步骤，对应的ubuntu账户才能开启声音，后续如果重启都需要重复这一步！
 
 
 
