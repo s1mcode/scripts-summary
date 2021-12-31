@@ -652,12 +652,17 @@ Github Gist链接: [https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9
 
 参考：
 
-[Ubuntu]: https://hostloc.com/thread-899918-1-1.html
-[甲骨文ARM]: https://hostloc.com/thread-944424-1-1.html
-[甲骨文ARM远程桌面转发声音]: https://hostloc.com/thread-935349-1-1.html
-[甲骨文ARMUbuntu20.04原版G]: https://live.ikaiche.org/archives/%E7%94%B2%E9%AA%A8%E6%96%87armubuntu2004%E5%8E%9F%E7%89%88gnome%E6%A1%8C%E9%9D%A2frp%E5%86%85%E9%83%A8%E8%BD%AC%E5%8F%91%E6%95%99%E7%A8%8B
-[甲骨文ARMUbuntu20.04原版G]: https://life.ikaiche.org/2021/12/21/6/
-[甲骨文ARM]: https://life.ikaiche.org/2021/12/22/%e7%94%b2%e9%aa%a8%e6%96%87arm-ubuntu20-04-gnome%e8%bf%9c%e7%a8%8b%e6%a1%8c%e9%9d%a2%e5%bc%80%e5%90%af%e5%a3%b0%e9%9f%b3/
+[**Ubuntu ARM Gnome教程已发布到博客！**](https://hostloc.com/thread-899918-1-1.html)
+
+[**甲骨文ARM Ubuntu Gnome桌面开启声音教程**](https://hostloc.com/thread-944424-1-1.html)
+
+[**甲骨文ARM远程桌面转发声音**](https://hostloc.com/thread-935349-1-1.html)
+
+[甲骨文ARM Ubuntu20.04原版Gnome桌面+frp内部转发教程](https://live.ikaiche.org/archives/%E7%94%B2%E9%AA%A8%E6%96%87armubuntu2004%E5%8E%9F%E7%89%88gnome%E6%A1%8C%E9%9D%A2frp%E5%86%85%E9%83%A8%E8%BD%AC%E5%8F%91%E6%95%99%E7%A8%8B)
+
+[甲骨文ARMUbuntu20.04原版Gnome桌面+frp内部转发教程](https://life.ikaiche.org/2021/12/21/6/)
+
+[甲骨文ARM Ubuntu20.04 Gnome远程桌面开启声音](https://life.ikaiche.org/2021/12/22/%E7%94%B2%E9%AA%A8%E6%96%87arm-ubuntu20-04-gnome%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E5%BC%80%E5%90%AF%E5%A3%B0%E9%9F%B3/)
 
 ##### 准备
 
@@ -841,12 +846,12 @@ vhost_https_port = 8443
 dashboard_addr = 0.0.0.0
 dashboard_port = 7500
 dashboard_user = admin
-dashboard_pwd = 12345678
+dashboard_pwd = 135792468
 log_file = ./frps.log
 log_level = info
 log_max_days = 3
 disable_log_color = false
-token = 12345678
+token = 135792468
 allow_ports = 13000-14000
 max_pool_count = 5
 max_ports_per_client = 0
@@ -865,7 +870,7 @@ chmod 754 /etc/systemd/system/frps.service
 systemctl enable frps.service
 ```
 
-4.在/etc/frp/frp_0.34.2_linux_arm64目录下
+4.在/etc/frp目录下
 
 ```bash
 cd /etc/frp/
@@ -921,10 +926,13 @@ sudo systemctl restart xrdp
 
 参考： 
 
-[xrdp配置文件详解]: https://blog.csdn.net/yyywxk/article/details/106571336
-[学习ubuntu远程桌面（二）：远程桌面]: https://www.shuzhiduo.com/A/o75NLgRezW/?utm_source=pocket_mylist
-[如何设置重用现有会话的xrdp会话？]: https://ubuntuqa.com/article/1739.html?utm_source=pocket_mylist
-[How]: https://askubuntu.com/questions/133343/how-do-i-set-up-xrdp-session-that-reuses-an-existing-session
+[xrdp配置文件详解](https://blog.csdn.net/yyywxk/article/details/106571336)
+
+[学习ubuntu远程桌面（二）：远程桌面](https://www.shuzhiduo.com/A/o75NLgRezW/?utm_source=pocket_mylist)
+
+[如何设置重用现有会话的xrdp会话？ ](https://ubuntuqa.com/article/1739.html?utm_source=pocket_mylist)
+
+[How do I set up xrdp session that reuses an existing session？](https://askubuntu.com/questions/133343/how-do-i-set-up-xrdp-session-that-reuses-an-existing-session)
 
 1、会话 （session）设置
 
