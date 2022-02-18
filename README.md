@@ -1274,6 +1274,92 @@ port=5912
 
 新建一个非root用户，并设置密码，以后使用该用户登录xrdp。
 
+### ARM 远程桌面（甲骨文 Ubuntu ARM Gnome ）安装 IDEA
+
+参考：
+
+[Ubuntu 系统下安装 IntelliJ IDEA](https://developer.aliyun.com/article/7961)
+
+[Ubuntu 系统下安装 IntelliJ IDEA](https://www.lhsz.xyz/read/ideabook/ubuntu-install.md)
+
+[Intellij idea史上最简单的教程之Linux下安装与破解Intellij idea2017](https://www.1024sou.com/article/102050.html)
+
+[在ubuntu中为IDEA，Pycharm等软件创建启动图标](https://www.jianshu.com/p/9699fef51588)
+
+首先安装 JDK，以下代码在 RDP cmd 程序中运行：
+
+```bash
+# 查看版本
+java -version
+查看可以安装的版本
+apt-cache search openjdk
+##################无效步骤记录########################
+apt-get install openjdk-8-jdk
+# 发现安装不上 IDEA，报错，故卸载 
+# 报错内容：JDKError occurred during initialization of VM
+java.lang.UnsupportedClassVersionError: com/intellij/util/lang/PathClassLoader has been compiled by a more recent version of the Java Runtime (class file version 55.0), this version of the Java Runtime only recognizes class file versions up to 52.0
+# 卸载JDK
+sudo apt-get remove openjdk-8-jdk
+# 此时 java -version 还是显示 1.8 版本
+# 卸载 JRE
+sudo apt-get remove openjdk-8-jre-headless
+# 此时 java -version 竟然显示 11 版本
+# 尝试再次安装 IDEA，发现运行了一段时间，报了别的错
+# 报错内容：Illegal reflective access by com.intellij.util.lang.UrlClassLoader (file:/opt/idea-IU-213.6777.52/lib/util.jar) to field java.lang.ClassLoader.classLoaderValueMap
+WARNING: Please consider reporting this to the maintainers of com.intellij.util.lang.UrlClassLoader
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+...
+# 然后尝试手动安装 JDK 11，之后再安装竟然成功了
+###################无效步骤记录########################
+sudo apt install openjdk-11-jdk
+java -version
+# 此时 java -version 显示 11 版本
+```
+
+在[官网](https://www.jetbrains.com/idea/)下载以 .tar.gz 结尾的 Linux 版本安装包，下载好后开始安装：
+
+```bash
+ # 复制安装包到/opt
+ sudo mv /home/rdpuser/下载/ideaIU-2021.3.2.tar.gz /opt
+ #进入/opt，解压
+ cd /opt
+ sudo tar xfz ideaIU-2021.3.2.tar.gz
+ # 开始安装
+ # 以下代码必须在 RDP cmd 程序中运行
+ cd /opt/idea-IU-213.6777.52/bin
+ ./idea.sh
+```
+
+现在可以使用了，但是关闭后，以后再打开，还要在 cmd 中使用 `/opt/idea-IU-213.6777.52/bin/idea.sh`命令打开，很不方便，所以下面创建一个启动图标，方便使用。
+
+打开终端输入并执行：
+
+```bash
+sudo vim /usr/share/applications/intellij-idea.desktop
+```
+
+然后在vim中输入下列代码：
+
+```bash
+[Desktop Entry]
+Name= idea
+Comment= idea
+Exec= /opt/idea-IU-213.6777.52/bin/idea.sh
+Icon=/opt/idea-IU-213.6777.52/bin/idea.png
+Terminal=false
+Type=Application
+Categories=Application;Development;
+```
+
+最后在终端中输入并执行：
+
+```bash
+sudo chmod +x /usr/share/applications/intellij-idea.desktop
+```
+
+然后打开功能键输入 idea 即可看见快捷方式，当然也可以打开 /usr/share/applications/ 目录中寻找。
+
 ### DNS 解锁
 
 #### dns-change-hostmsu
