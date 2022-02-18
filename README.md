@@ -75,6 +75,8 @@ sudo reboot
 
 参考：
 
+[萌咖大佬的一键DD脚本](https://github.com/veip007/dd)
+
 [DD Windows 一键脚本（GCP谷歌云Oracle甲骨文Azure微软云OVH云）](https://sunpma.com/137.html)
 
 [Debian/Ubuntu/CentOS 网络重装系统一键脚本](https://sword.studio/218.html)
@@ -199,7 +201,7 @@ SUBNET MASK
 
 > \[!TIP] 此电脑 -> 右键属性 -> 远程设置 -> 取消框选"仅允许运行使用网络级别身份验证的远程桌面的计算机连接(建议)"
 
-#### Oracle 甲骨文
+#### Oracle 甲骨文 DD win7
 
 参考：localhost
 
@@ -214,8 +216,10 @@ apt-get install -y xz-utils openssl gawk file
 
 dd 脚本：
 
-```
-wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd 'http://d.nat.ee/win/lite/win7-ent-sp1-x64-cn/win7-ent-sp1-x64-cn-efi.vhd.gz'
+```bash
+# wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd 'http://d.nat.ee/win/lite/win7-ent-sp1-x64-cn/win7-ent-sp1-x64-cn-efi.vhd.gz'
+
+wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd 'https://oss.sunpma.com/Windows/Oracle_Win7_sp1_64_Administrator_nat.ee.gz'
 ```
 
 DD包来源：[http://d.nat.ee/?win/lite/win7-ent-sp1-x64-cn](http://d.nat.ee/?win/lite/win7-ent-sp1-x64-cn)
@@ -293,119 +297,6 @@ DD包自带 nat.cmd 在系统盘根目录，是用来给VPS服务器设置静态
 # 使用管理员权限运行cmd执行
 slmgr /skms kms.03k.org
 slmgr /ato
-```
-
-### `iptables` 的使用
-
-#### 安装 `iptables`
-
-首先确定你的系统已经安装iptables
-
-```bash
-whereis iptables
-```
-
-如果能看到如下类似信息,说明你已经安装了 `iptables`
-
-```bash
-iptables: /sbin/iptables /usr/share/iptables /usr/share/man/man8/iptables.8.gz
-```
-
-如果不是这个提示,或者没有任何提示,那你的Debian上可能没有安装 `iptables`
-
-请使用如下命令安装:
-
-```bash
-apt-get install iptables
-```
-
-#### 配置 `iptables`
-
-查看iptables配置：
-
-```bash
-iptables -L -n
-```
-
-如果是以下内容说明跟没配置一样
-
-```bash
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination         
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-```
-
-编辑/新建一个新的iptables策略
-
-```bash
-vim /etc/iptables.test.rules
-```
-
-```bash
-*filter
-
-# 接受所有已建立的入站连接
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# 允许所有出站流量
-# You could modify this to only allow certain traffic
--A OUTPUT -j ACCEPT
-
-# 网站服务常用的80和443端口允许
--A INPUT -p tcp --dport 80 -j ACCEPT
--A INPUT -p tcp --dport 443 -j ACCEPT
--A INPUT -p tcp --dport 31570 -j ACCEPT
-
-# 允许SSH连接
-# The --dport 端口号要与 /etc/ssh/sshd_config 中的Port参数相同
--A INPUT -p tcp -m state --state NEW --dport 22 -j ACCEPT
-
-# Now you should read up on iptables rules and consider whether ssh access
-# for everyone is really desired. Most likely you will only allow access from certain IPs.
-
-# 允许 ping
-#  note that blocking other types of icmp packets is considered a bad idea by some
-#  remove -m icmp --icmp-type 8 from this line to allow all kinds of icmp:
-#  https://security.stackexchange.com/questions/22711
--A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
-
-# log iptables denied calls (access via 'dmesg' command)
--A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
-
-# 除了上面设置端口的规则，其他都拒绝
--A INPUT -j REJECT
--A FORWARD -j REJECT
-
-COMMIT
-#
-```
-
-加载配置策略生效
-
-```bash
-iptables-restore < /etc/iptables.test.rules
-```
-
-配置开机自动加载配置策略
-
-```bash
-vim /etc/network/if-pre-up.d/iptables
-```
-
-```bash
-#!/bin/bash
-/sbin/iptables-restore < /etc/iptables.test.rules
-```
-
-脚本设置运行权限
-
-```bash
-chmod +x /etc/network/if-pre-up.d/iptables
 ```
 
 ### 测速脚本
@@ -549,11 +440,189 @@ chmod -R 755 /root/cert
 
 ### 防火墙相关
 
+注意VPS的防火墙可能有两层：
+
+1.服务商的防火墙
+
+2.操作系统的防火墙
+
+#### 查看某端口是否开放
+
+```bash
+# 例如查看80端口是否开放，输入 lsof -i:端口号 ，如果没有信息出现则说明该端口还未开放
+lsof -i:80
+```
+
+也可以通过以下命令，查看所有开放的端口
+
+```bash
+netstat -aptn
+```
+
+#### Firewalld
+
+RedHat/CentOS/Oracle Linux 常用。Debian/Ubuntu往往不会默认启动。
+
+注意： `iptables` 命令并不能设置这类防火墙。
+
+```bash
+firewall-cmd --state
+firewall-cmd --permanent --zone=public --add-port=80/tcp
+firewall-cmd --permanent --zone=public --add-port=443/tcp
+firewall-cmd --permanent --zone=public --add-port=7000/tcp
+firewall-cmd --permanent --zone=public --add-port=7500/tcp
+firewall-cmd --permanent --zone=public --add-port=10001-50000/tcp
+firewall-cmd --permanent --zone=public --add-port=10001-50000/udp
+firewall-cmd --reload
+```
+
+常用命令：
+
 ```bash
 apt install firewalld -y               # 安装 firewalld
 firewall-cmd --state                   # 查看防火墙状态
 systemctl stop firewalld.service       # 停止防火墙
 systemctl disable firewalld.service    # 禁止防火墙开机自启
+```
+
+#### ufw
+
+Debian/Ubuntu往往会默认启动。
+
+```bash
+ufw status
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 7000/tcp
+ufw allow 7500/tcp
+ufw allow 10001:50000/tcp
+ufw allow 10001:50000/udp
+```
+
+#### iptables 
+
+不同服务商的系统可能有特殊化的定制。
+
+```bash
+iptables -I INPUT -p tcp --dport 80 -j ACCEPT
+iptables -I INPUT -p tcp --dport 443 -j ACCEPT
+iptables -I INPUT -p tcp --dport 7000 -j ACCEPT
+iptables -I INPUT -p tcp --dport 7500 -j ACCEPT
+iptables -I INPUT -p tcp --dport 10001:50000 -j ACCEPT
+iptables -I INPUT -p udp --dport 10001:50000 -j ACCEPT
+```
+
+### `iptables` 的使用
+
+#### 安装 `iptables`
+
+首先确定你的系统已经安装iptables
+
+```bash
+whereis iptables
+```
+
+如果能看到如下类似信息,说明你已经安装了 `iptables`
+
+```bash
+iptables: /sbin/iptables /usr/share/iptables /usr/share/man/man8/iptables.8.gz
+```
+
+如果不是这个提示,或者没有任何提示,那你的Debian上可能没有安装 `iptables`
+
+请使用如下命令安装:
+
+```bash
+apt-get install iptables
+```
+
+#### 配置 `iptables`
+
+查看iptables配置：
+
+```bash
+iptables -L -n
+```
+
+如果是以下内容说明跟没配置一样
+
+```bash
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+```
+
+编辑/新建一个新的iptables策略
+
+```bash
+vim /etc/iptables.test.rules
+```
+
+```bash
+*filter
+
+# 接受所有已建立的入站连接
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# 允许所有出站流量
+# You could modify this to only allow certain traffic
+-A OUTPUT -j ACCEPT
+
+# 网站服务常用的80和443端口允许
+-A INPUT -p tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp --dport 443 -j ACCEPT
+-A INPUT -p tcp --dport 31570 -j ACCEPT
+
+# 允许SSH连接
+# The --dport 端口号要与 /etc/ssh/sshd_config 中的Port参数相同
+-A INPUT -p tcp -m state --state NEW --dport 22 -j ACCEPT
+
+# Now you should read up on iptables rules and consider whether ssh access
+# for everyone is really desired. Most likely you will only allow access from certain IPs.
+
+# 允许 ping
+#  note that blocking other types of icmp packets is considered a bad idea by some
+#  remove -m icmp --icmp-type 8 from this line to allow all kinds of icmp:
+#  https://security.stackexchange.com/questions/22711
+-A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
+
+# log iptables denied calls (access via 'dmesg' command)
+-A INPUT -m limit --limit 5/min -j LOG --log-prefix "iptables denied: " --log-level 7
+
+# 除了上面设置端口的规则，其他都拒绝
+-A INPUT -j REJECT
+-A FORWARD -j REJECT
+
+COMMIT
+#
+```
+
+加载配置策略生效
+
+```bash
+iptables-restore < /etc/iptables.test.rules
+```
+
+配置开机自动加载配置策略
+
+```bash
+vim /etc/network/if-pre-up.d/iptables
+```
+
+```bash
+#!/bin/bash
+/sbin/iptables-restore < /etc/iptables.test.rules
+```
+
+脚本设置运行权限
+
+```bash
+chmod +x /etc/network/if-pre-up.d/iptables
 ```
 
 ### Linux 安装图形化界面
@@ -664,6 +733,8 @@ Github Gist链接: [https://gist.github.com/flyqie/60a005535afc0b5d45255619299b9
 
 [甲骨文ARM Ubuntu20.04 Gnome远程桌面开启声音](https://life.ikaiche.org/2021/12/22/%E7%94%B2%E9%AA%A8%E6%96%87arm-ubuntu20-04-gnome%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2%E5%BC%80%E5%90%AF%E5%A3%B0%E9%9F%B3/)
 
+[甲骨文ARM远程桌面转发声音](https://hostloc.com/thread-935349-1-1.html)
+
 ##### 准备
 
 1.甲骨文ARM（为了性能保证系统体验，建议ARM 2核心或更高！）
@@ -712,6 +783,7 @@ OK
 下面我们开始真正的桌面环境的安装，这里安装ubuntu desktop而不是xfce，原汁原味！执行命令：
 
 ```bash
+# apt install screen -y
 # screen -R insdesk
 apt install ubuntu-desktop
 ```
@@ -730,7 +802,7 @@ Xrdp会安装成服务，可以验证一下：
 systemctl status xrdp
 ```
 
-可以看到红色ERROR这一行信息，如何解决呢？
+如果看到红色ERROR这一行信息，如何解决呢？
 
 ```bash
 Cannot read private key file/etc/xrdp/key-pem:Permisslon denied
@@ -759,7 +831,7 @@ systemctl status xrdp
 12月 23 02:03:27 ubuntu xrdp[45148]: (45148)(281473022304272)[INFO ] xrdp_listen_pp done
 ```
 
-这样桌面环境和远程服务安装好后，就可以连接到远程桌面。经过反复的测试和实验，使用Windows 10 默认的远程桌面工具mstsc，体验非常卡顿,具体原因具体可以总结一下，就是微软的rdp与Linux的Xrdp进行连接时存在兼容性问题，不要以为纯粹是网络问题，其实甲骨文ARM的性能非常夸张，可以很负责任的告诉大家，甲骨文的这个ARM芯片，相比于X86架构，你很难在消费市场上找到能比他强的，总之性能就是给的实在，具体大家深入体会后就明白了。
+这样桌面环境和远程服务安装好后，就可以连接到远程桌面。经过反复的测试和实验，使用Windows 10 默认的远程桌面工具mstsc，体验非常卡顿，具体原因具体可以总结一下，就是微软的rdp与Linux的Xrdp进行连接时存在兼容性问题，不要以为纯粹是网络问题，其实甲骨文ARM的性能非常夸张，可以很负责任的告诉大家，甲骨文的这个ARM芯片，相比于X86架构，你很难在消费市场上找到能比他强的，总之性能就是给的实在，具体大家深入体会后就明白了。
 
 ##### 安装Linux FRP服务
 
@@ -792,7 +864,7 @@ mv frp_0.34.2_linux_arm64 frp
 [common]
 server_addr = 127.0.0.1 #如果你就想在ARM机器本地内部做一次转发，就用127.0.0.1，如果你是用腾讯云香港做服务器转发，这里就填腾讯云的IP
 server_port = 7000
-token = 12345678
+token = 135792468
 
 [13389]
 type = tcp
@@ -885,6 +957,190 @@ ps -ef|grep frps
 至此，1.如果大家是在ARM本机内部做转发的，浏览器输入ARM机器IP地址:7500，进入后找TCP，如果能看到一条记录那就是成功启动FRP了。
 
 2.如果大家是在比如腾讯云机器上做frps的，浏览器输入腾讯云机器IP地址:7500，进入后找TCP，如果能看到一条记录那就是成功启动FRP了。
+
+连接到桌面后,一路点击Next,最后点击Start Using Ubuntu。
+
+接下来设置中文及中文输入法支持，依次点击左上角的 Activities-Show Applications-Language Support，之后在Language Support中增加语言支持：如果问你是否安装，先点击安装。完成后点击"添加或删除语言"按钮，找到"中文（简体）"打勾，Apply。
+
+完成后，顺便将键盘输入法系统选择成为“iBus”。
+
+接下来重启系统（ssh中使用命令`reboot`），重新连接后会看到界面菜单均已中文显示。点击右上角电源标识旁边的小尖号，出现的菜单里点击设置，在设置的界面中找到“区域与语言”，能够看到语言已经设置成为“汉语”。我们接下来要设置中文输入法，点击下面的“+”，出现输入源小窗口，点击“汉语”，点击“中文（智能拼音）”进行“添加”就完成了输入法的设置。
+
+最后在ssh中新建用户，桌面端用这个用户登录，并且在设置->电源中，将息屏设置为从不。
+
+```bash
+adduser rdpuser
+# 删除用户
+# userdel testuser
+passwd rdpuser
+usermod -G sudo rdpuser
+```
+
+##### 甲骨文ARM Ubuntu20.04Gnome远程桌面开启声音
+
+修改ubuntu 默认的源地址
+
+```
+vim /etc/apt/source.list
+```
+
+添加：
+
+```bash
+#deb http://ports.ubuntu.com/ focal main restricted
+#deb http://ports.ubuntu.com/ focal-updates main restricted
+deb http://ports.ubuntu.com/ focal-security main restricted
+# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
+# newer versions of the distribution.
+deb http://ports.ubuntu.com/ focal main restricted
+# deb-src http://archive.ubuntu.com/ubuntu focal main restricted
+## Major bug fix updates produced after the final release of the
+## distribution.
+deb http://ports.ubuntu.com/ focal-updates main restricted
+# deb-src http://archive.ubuntu.com/ubuntu focal-updates main restricted
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team. Also, please note that software in universe WILL NOT receive any
+## review or updates from the Ubuntu security team.
+deb http://ports.ubuntu.com/ focal universe
+# deb-src http://archive.ubuntu.com/ubuntu focal universe
+deb http://ports.ubuntu.com/ focal-updates universe
+# deb-src http://archive.ubuntu.com/ubuntu focal-updates universe
+## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
+## team, and may not be under a free licence. Please satisfy yourself as to
+## your rights to use the software. Also, please note that software in
+## multiverse WILL NOT receive any review or updates from the Ubuntu
+## security team.
+deb http://ports.ubuntu.com/ focal multiverse
+# deb-src http://archive.ubuntu.com/ubuntu focal multiverse
+deb http://ports.ubuntu.com/ focal-updates multiverse
+# deb-src http://archive.ubuntu.com/ubuntu focal-updates multiverse
+## N.B. software from this repository may not have been tested as
+## extensively as that contained in the main release, although it includes
+## newer versions of some applications which may provide useful features.
+## Also, please note that software in backports WILL NOT receive any review
+## or updates from the Ubuntu security team.
+deb http://ports.ubuntu.com/ focal-backports main restricted universe multiverse
+# deb-src http://archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse
+## Uncomment the following two lines to add software from Canonical's
+## 'partner' repository.
+## This software is not part of Ubuntu, but is offered by Canonical and the
+## respective vendors as a service to Ubuntu users.
+deb http://archive.canonical.com/ubuntu focal partner
+deb-src http://archive.canonical.com/ubuntu focal partner
+deb http://ports.ubuntu.com/ubuntu-ports focal-security main restricted
+deb-src http://ports.ubuntu.com/ubuntu-ports focal-security main universe restricted multiverse
+deb http://ports.ubuntu.com/ubuntu-ports focal-security universe
+# deb-src http://ports.ubuntu.com/ubuntu-ports focal-security universe
+deb http://ports.ubuntu.com/ubuntu-ports focal-security multiverse
+# deb-src http://ports.ubuntu.com/ubuntu-ports focal-security multiverse
+deb http://ports.ubuntu.com/ubuntu-ports/ focal main universe restricted multiversedeb-src http://ports.ubuntu.com/ubuntu-ports/ focal main universe restricted multiverse #Added by software-properties
+```
+
+安装Pulseaudio所需的所有组件
+
+```bash
+sudo -i
+cd /root
+apt-get install software-properties-common -y
+apt-get install git libpulse-dev autoconf m4 intltool dpkg-dev libtool libsndfile-dev libcap-dev libjson-c-dev -y
+# apt-get build-dep pulseaudio -y
+apt update
+```
+
+下载Pulseaudio源码
+
+```bash
+apt-get build-dep pulseaudio -y
+apt source pulseaudio
+```
+
+此时cmd输出的最后一行为：
+
+```bash
+W: 由于文件'pulseaudio_13.99.1-1ubuntu3.8.dsc'无法被用户'_apt'访问，已脱离沙盒并提权为根用户来进行下载。 - pkgAcquire::Run (13: 权限不够)
+```
+
+当前文件夹已经多了一个文件夹和几个文件：
+
+```bash
+drwxr-xr-x 15 root root    4096 12月 24 02:47 pulseaudio-13.99.1/
+-rw-r--r--  1 root root  152288 11月 23  2020 pulseaudio_13.99.1-1ubuntu3.8.debian.tar.xz
+-rw-r--r--  1 root root    3685 11月 23  2020 pulseaudio_13.99.1-1ubuntu3.8.dsc
+-rw-r--r--  1 root root 1955840 2月  26  2020 pulseaudio_13.99.1.orig.tar.xz
+```
+
+提权
+
+```bash
+chmod 777 pulseaudio_13.99.1-1ubuntu3.8.dsc
+```
+
+删除Palseaudio源码文件夹
+
+```
+rm -rf pulseaudio-13.99.1
+```
+
+重新下载源码，进入源码目录，配置
+
+```bash
+apt source pulseaudio
+cd pulseaudio-13.99.1
+./configure
+```
+
+克隆仓库
+
+```bash
+cd ../
+git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git
+```
+
+编译
+
+```bash
+cd pulseaudio-module-xrdp
+./bootstrap
+./configure PULSE_DIR="/root/pulseaudio-13.99.1"
+make
+```
+
+安装动态链接库
+
+```bash
+cd src/.libs
+install -t "/var/lib/xrdp-pulseaudio-installer" -D -m 644 *.so
+install -t "/usr/lib/pulse-$pulsever/modules" -D -m 644 *.so
+install -t "/usr/lib/pulse-13.99.1/modules" -D -m 644 *.so
+ls /var/lib/xrdp-pulseaudio-installer
+```
+
+对于root用户想启用pulseaudio的话，还需要以下几行命令，把root添加到pulse（可选）
+
+```
+gpasswd -a root pulse
+gpasswd -a root pulse-access
+```
+
+重启
+
+```bash
+reboot
+```
+
+重启后从 rdp 登录非 root 用户，打开 cmd 应用，输入以下命令
+
+```bash
+pulseaudio -k && pulseaudio
+```
+
+等几秒钟再ctrl+c,结束掉，然后输入命令
+
+```bash
+pulseaudio
+```
+
+（注意：如果有报错不用管，别关看声卡变成xrdp sink了没有，试一下声音，看看rdp声音开了没，有声音了直接关掉窗口）每个ubuntu账户都需要走一遍这个步骤，对应的ubuntu账户才能开启声音，后续如果重启都需要重复这一步！
 
 ##### 解决Ubuntu 20.04 安装xrdp后的远程黑屏问题
 
@@ -1017,176 +1273,6 @@ port=5912
 3、当前root用户会话锁屏
 
 新建一个非root用户，并设置密码，以后使用该用户登录xrdp。
-
-##### 甲骨文ARM Ubuntu20.04Gnome远程桌面开启声音
-
-修改ubuntu 默认的源地址
-
-```
-vim /etc/apt/source.list
-```
-
-添加：
-
-```bash
-#deb http://ports.ubuntu.com/ focal main restricted
-#deb http://ports.ubuntu.com/ focal-updates main restricted
-deb http://ports.ubuntu.com/ focal-security main restricted
-# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
-# newer versions of the distribution.
-deb http://ports.ubuntu.com/ focal main restricted
-# deb-src http://archive.ubuntu.com/ubuntu focal main restricted
-## Major bug fix updates produced after the final release of the
-## distribution.
-deb http://ports.ubuntu.com/ focal-updates main restricted
-# deb-src http://archive.ubuntu.com/ubuntu focal-updates main restricted
-## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
-## team. Also, please note that software in universe WILL NOT receive any
-## review or updates from the Ubuntu security team.
-deb http://ports.ubuntu.com/ focal universe
-# deb-src http://archive.ubuntu.com/ubuntu focal universe
-deb http://ports.ubuntu.com/ focal-updates universe
-# deb-src http://archive.ubuntu.com/ubuntu focal-updates universe
-## N.B. software from this repository is ENTIRELY UNSUPPORTED by the Ubuntu
-## team, and may not be under a free licence. Please satisfy yourself as to
-## your rights to use the software. Also, please note that software in
-## multiverse WILL NOT receive any review or updates from the Ubuntu
-## security team.
-deb http://ports.ubuntu.com/ focal multiverse
-# deb-src http://archive.ubuntu.com/ubuntu focal multiverse
-deb http://ports.ubuntu.com/ focal-updates multiverse
-# deb-src http://archive.ubuntu.com/ubuntu focal-updates multiverse
-## N.B. software from this repository may not have been tested as
-## extensively as that contained in the main release, although it includes
-## newer versions of some applications which may provide useful features.
-## Also, please note that software in backports WILL NOT receive any review
-## or updates from the Ubuntu security team.
-deb http://ports.ubuntu.com/ focal-backports main restricted universe multiverse
-# deb-src http://archive.ubuntu.com/ubuntu focal-backports main restricted universe multiverse
-## Uncomment the following two lines to add software from Canonical's
-## 'partner' repository.
-## This software is not part of Ubuntu, but is offered by Canonical and the
-## respective vendors as a service to Ubuntu users.
-deb http://archive.canonical.com/ubuntu focal partner
-deb-src http://archive.canonical.com/ubuntu focal partner
-deb http://ports.ubuntu.com/ubuntu-ports focal-security main restricted
-deb-src http://ports.ubuntu.com/ubuntu-ports focal-security main universe restricted multiverse
-deb http://ports.ubuntu.com/ubuntu-ports focal-security universe
-# deb-src http://ports.ubuntu.com/ubuntu-ports focal-security universe
-deb http://ports.ubuntu.com/ubuntu-ports focal-security multiverse
-# deb-src http://ports.ubuntu.com/ubuntu-ports focal-security multiverse
-deb http://ports.ubuntu.com/ubuntu-ports/ focal main universe restricted multiversedeb-src http://ports.ubuntu.com/ubuntu-ports/ focal main universe restricted multiverse #Added by software-properties
-```
-
-安装Pulseaudio所需的所有组件
-
-```bash
-apt-get install software-properties-common -y
-apt-get install git libpulse-dev autoconf m4 intltool dpkg-dev libtool libsndfile-dev libcap-dev libjson-c-dev -y
-apt-get build-dep pulseaudio -y
-apt update
-```
-
-下载Pulseaudio源码
-
-```bash
-apt-get build-dep pulseaudio -y
-apt source pulseaudio
-```
-
-此时cmd输出的最后一行为：
-
-```bash
-W: 由于文件'pulseaudio_13.99.1-1ubuntu3.8.dsc'无法被用户'_apt'访问，已脱离沙盒并提权为根用户来进行下载。 - pkgAcquire::Run (13: 权限不够)
-```
-
-当前文件夹已经多了一个文件夹和几个文件：
-
-```bash
-drwxr-xr-x 15 root root    4096 12月 24 02:47 pulseaudio-13.99.1/
--rw-r--r--  1 root root  152288 11月 23  2020 pulseaudio_13.99.1-1ubuntu3.8.debian.tar.xz
--rw-r--r--  1 root root    3685 11月 23  2020 pulseaudio_13.99.1-1ubuntu3.8.dsc
--rw-r--r--  1 root root 1955840 2月  26  2020 pulseaudio_13.99.1.orig.tar.xz
-```
-
-提权
-
-```bash
-chmod 777 pulseaudio_13.99.1-1ubuntu3.8.dsc
-```
-
-删除Palseaudio源码文件夹
-
-```
-rm -rf pulseaudio-13.99.1
-```
-
-重新下载源码，进入源码目录，配置
-
-```bash
-apt source pulseaudio
-cd pulseaudio-13.99.1
-./configure
-```
-
-克隆仓库
-
-```bash
-cd ../
-git clone https://github.com/neutrinolabs/pulseaudio-module-xrdp.git
-```
-
-编译
-
-```bash
-cd pulseaudio-module-xrdp
-./bootstrap
-./configure PULSE_DIR="/root/pulseaudio-13.99.1"
-make
-```
-
-安装动态链接库
-
-```bash
-cd src/.libs
-install -t "/var/lib/xrdp-pulseaudio-installer" -D -m 644 *.so
-install -t "/usr/lib/pulse-$pulsever/modules" -D -m 644 *.so
-install -t "/usr/lib/pulse-13.99.1/modules" -D -m 644 *.so
-ls /var/lib/xrdp-pulseaudio-installer
-```
-
-对于root用户想启用pulseaudio的话，还需要以下几行命令，把root添加到pulse（可选）
-
-```
-gpasswd -a root pulse
-gpasswd -a root pulse-access
-```
-
-重启
-
-```bash
-reboot
-```
-
-重启后输入以下命令
-
-```bash
-pulseaudio -k && pulseaudio
-```
-
-等几秒钟再ctrl+c,结束掉，然后输入命令
-
-```bash
-pulseaudio
-```
-
-（注意：如果有报错不用管，别关看声卡变成xrdp sink了没有，试一下声音，看看rdp声音开了没，有声音了直接关掉窗口）每个ubuntu账户都需要走一遍这个步骤，对应的ubuntu账户才能开启声音，后续如果重启都需要重复这一步！
-
-
-
-
-
-
 
 ### DNS 解锁
 
