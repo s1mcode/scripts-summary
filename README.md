@@ -102,9 +102,42 @@ apt-get install -y xz-utils openssl gawk file
 yum install -y xz openssl gawk file wget
 ```
 
+**参数说明**
+
+```
+Usage:
+        bash InstallNET.sh      -d/--debian [dist-name]
+                                -u/--ubuntu [dist-name]
+                                -c/--centos [dist-version]
+                                -v/--ver [32/i386|64/amd64]
+                                --ip-addr/--ip-gate/--ip-mask
+                                -apt/-yum/--mirror
+                                -dd/--image
+                                -a/-m
+ 
+# dist-name: 发行版本代号
+# dist-version: 发行版本号
+# -apt/-yum/--mirror : 使用定义镜像
+# -a/-m : 询问是否能进入VNC自行操作. -a 为不提示(一般用于全自动安装), -m 为提示.
+```
+
 **一键脚本**
 
 `wget --no-check-certificate -qO InstallNET.sh 'https://moeclub.org/attachment/LinuxShell/InstallNET.sh' && bash InstallNET.sh -dd '[DD包直连地址]'`
+
+例如：
+
+ARM DD ubuntu 20.04:
+
+```bash
+bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') -u 20.04 -v arm64 --mirror http://archive.ubuntu.com/ubuntu -p "自定义root密码" -port "自定义ssh端口"
+```
+
+AMD DD ubuntu 20.04:
+
+```bash
+bash <(wget --no-check-certificate -qO- 'https://raw.githubusercontent.com/MoeClub/Note/master/InstallNET.sh') -u 20.04 -v 64 --mirror http://archive.ubuntu.com/ubuntu -p "自定义root密码" -port "自定义ssh端口"
+```
 
 **GCP 谷歌云**
 
@@ -1303,7 +1336,7 @@ sudo apt-get remove openjdk-8-jdk
 # 此时 java -version 还是显示 1.8 版本
 # 卸载 JRE
 sudo apt-get remove openjdk-8-jre-headless
-# 此时 java -version 竟然显示 11 版本
+# 此时 java -version 竟然显示 11 版本（应该是安装IDEA时自动安装上的）
 # 尝试再次安装 IDEA，发现运行了一段时间，报了别的错
 # 报错内容：Illegal reflective access by com.intellij.util.lang.UrlClassLoader (file:/opt/idea-IU-213.6777.52/lib/util.jar) to field java.lang.ClassLoader.classLoaderValueMap
 WARNING: Please consider reporting this to the maintainers of com.intellij.util.lang.UrlClassLoader
@@ -1331,7 +1364,11 @@ java -version
  ./idea.sh
 ```
 
-现在可以使用了，但是关闭后，以后再打开，还要在 cmd 中使用 `/opt/idea-IU-213.6777.52/bin/idea.sh`命令打开，很不方便，所以下面创建一个启动图标，方便使用。
+现在可以使用了，但是关闭后，以后再打开，还要在 cmd 中使用 `sh /opt/idea-IU-213.6777.52/bin/idea.sh`命令打开，很不方便，所以下面创建一个启动图标，方便使用。
+
+方式一：文件 -> 关闭项目 -> 点击左下角齿轮 -> Create Desktop Entry
+
+方式二（方式一的底层操作就是方式二）：
 
 打开终端输入并执行：
 
@@ -1359,6 +1396,35 @@ sudo chmod +x /usr/share/applications/intellij-idea.desktop
 ```
 
 然后打开功能键输入 idea 即可看见快捷方式，当然也可以打开 /usr/share/applications/ 目录中寻找。
+
+### ARM 远程桌面（甲骨文 Ubuntu ARM Gnome ）安装 Pycharm
+
+参考：[在Ubuntu 20.04中安装Pycharm 2020.1](https://blog.csdn.net/feimeng116/article/details/105837483)
+
+首先安装常见 python 环境
+
+```bash
+# 检查 Python 3 是否安装
+python3 -V
+sudo apt install python3-pip
+sudo apt-get install python3-distutils
+```
+
+在[官网](https://www.jetbrains.com/pycharm/)下载以 .tar.gz 结尾的 Linux 版本安装包，下载好后开始安装：
+
+```bash
+# 复制安装包到/opt
+sudo mv /home/rdpuser/下载/pycharm-professional-2021.3.2.tar.gz /opt
+#进入/opt，解压
+cd /opt
+sudo tar xfz pycharm-professional-2021.3.2.tar.gz
+# 开始安装
+# 以下代码必须在 RDP cmd 程序中运行
+cd /opt/pycharm-2021.3.2/bin
+./pycharm.sh
+```
+
+创建启动图标的方式同 IDEA。
 
 ### DNS 解锁
 
