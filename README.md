@@ -2068,23 +2068,166 @@ apt-get install net-tools
 netstat -ntpl
 ```
 
+### 使用frp进行内网穿透
 
+参考：
 
+[使用frp进行内网穿透](https://sspai.com/post/52523?utm_source=pocket_mylist)
 
+[Windows/Linux服务器配置内网穿透frp远程桌面](https://starcheng.xyz/791.html?utm_source=pocket_mylist)
 
+[frp内网穿透反向代理实现Windows远程桌面连接](https://geomatlab.com/frp-windows-rdp/?utm_source=pocket_mylist)
 
+FRP github链接: https://github.com/fatedier/frp/releases/tag/v0.34.2
 
+大家看对版本，每个版本里都包含frps和frpc，如果大家用的是甲骨文春川，选linux_arm64就行。如果是比如用腾讯云做服务端的话，那么腾讯云是amd64的，甲骨文ARM是arm64的，在丢到各自的机器上时注意版本！！！
 
+#### 服务端配置
 
+1.下载并解压包，把如下文件放到/etc/frp 目录下
 
+```bash
+frps
+frps_full.ini 
+frps.ini
+```
 
+```bash
+cd /etc
+wget https://github.com/fatedier/frp/releases/download/v0.34.2/frp_0.34.2_linux_amd64.tar.gz
+tar -zxvf frp_0.34.2_linux_amd64.tar.gz
+mv frp_0.34.2_linux_amd64 frp
+```
 
+2.修改frps.ini文件
 
+```bash
+[common]
+bind_port = 7000
+dashboard_port = 7500
+token = YOUR_TOKEN
+dashboard_user = admin
+dashboard_pwd = DASHBOARD_PASSWORD
+vhost_http_port = 10080
+vhost_https_port = 10443
+```
 
+3.把systemd文件夹下的frps.service，放到/etc/systemd/system下
+设置权限，chmod 754 frps.service
+设置开机启动即可 systemctl enable frps.service
 
+```bash
+cd /etc/frp
+cp ./systemd/frps.service /etc/systemd/system
+chmod 754 /etc/systemd/system/frps.service
+systemctl enable frps.service
+```
 
+4.在/etc/frp目录下
 
+```bash
+cd /etc/frp/
+cp frps /usr/bin
+chmod +x /usr/bin/frps
+systemctl start frps
+ps -ef|grep frps
+```
 
+浏览器进入服务端IP地址:7500，进入后找TCP，可以看到转发状态。
 
+#### 客户端配置
 
+下载好Windows端，解压，编辑 frpc.ini：
 
+```bash
+[common]
+server_addr = 1.12.36.79
+server_port = 7000
+token = YOUR_TOKEN
+[mycomputer-rdp]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 3389
+remote_port = 7001
+[mycomputer-smb]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 445
+remote_port = 7002
+```
+
+> RDP，即Remote Desktop 远程桌面，Windows的RDP默认端口是3389，协议为TCP，建议使用frp远程连接前，在局域网中测试好，能够成功连接后再使用frp穿透连接。
+>
+> SMB，即Windows文件共享所使用的协议，默认端口号445，协议TCP，本条规则可实现远程文件访问。
+
+配置完成frpc.ini后，就可以运行frpc了。
+
+使用命令提示符或Powershell进入该目录下
+`cd C:\frp`
+并执行
+`./frpc -c frpc.ini`
+运行frpc程序，窗口中输出如下内容表示运行正常。
+
+```
+2019/01/12 16:14:56 [I] [service.go:205] login to server success, get run id [2b65b4e58a5917ac], server udp port [0]
+2019/01/12 16:14:56 [I] [proxy_manager.go:136] [2b65b4e58a5917ac] proxy added: [rdp smb]
+2019/01/12 16:14:56 [I] [control.go:143] [smb] start proxy success
+2019/01/12 16:14:56 [I] [control.go:143] [rdp] start proxy success
+```
+
+不要关闭命令行窗口，此时可以在局域网外使用相应程序访问 x.x.x.x:xxxx （IP为VPS的IP，端口为自定义的remote_port）即可访问到相应服务。
+
+#### 客户端后台运行及开机自启
+
+1.在frp 目录下，新建一个start.bat的文件，复制下面内容进去，最下面“D:\FRP\”是绝对路径，根据自己的情况进行替换,如果是服务端就把frpc.exe更改为frps.exe
+
+```
+@echo off
+if "%1" == "h" goto begin
+mshta vbscript:createobject("wscript.shell").run("""%~nx0"" h",0)(window.close)&&exit
+:begin
+D:\develop\frp\frpc.exe -c D:\develop\frp\frpc.ini
+```
+
+2.把start.bat添加进开机服务，右键【此电脑】-【管理】-【任务计划程序】-【创建任务】，并按如下操作，然后确定即可。
+
+------常规------
+
+```
+名称：frp
+描述：frp开机自启
+√ 不管用户是否登录都要运行
+√ 不存储密码。该任务将只有访问本地资源的权限
+√ 使用最高权限运行
+```
+
+------触发器==>新建------
+
+```
+开始任务（G）：启动时
+√ 延迟任务时间（K）：1分钟
+√ 已启用（B）
+```
+
+------操作==>新建------
+
+```
+操作（I）：启动程序
+程序或脚本（P）：D:\develop\frp\start.bat
+起始于（可选）：D:\develop\frp\
+```
+
+-----条件------
+
+```
+取消所有勾选
+```
+
+-----设置------
+
+```
+√ 允许按需运行任务（L）
+√ 如果请求后任务还在运行，强行将其停止（F）
+```
+
+重启客户端，查看服务端控制面板。
