@@ -2068,7 +2068,7 @@ apt-get install net-tools
 netstat -ntpl
 ```
 
-### 使用frp进行内网穿透
+## 使用frp进行内网穿透
 
 参考：
 
@@ -2231,3 +2231,81 @@ D:\develop\frp\frpc.exe -c D:\develop\frp\frpc.ini
 ```
 
 重启客户端，查看服务端控制面板。
+
+## WIFI断开自动重连脚本
+
+参考：
+
+https://yangt.me/post/reconnect-wifi/
+
+https://www.zhihu.com/question/59449991
+
+https://blog.csdn.net/liushall/article/details/112506550
+
+### 获取目标WIFI的ssid
+
+首先在 cmd 中使用如下命令查看周围的WIFI：
+
+```bash
+netsh wlan show networks mode=bssid
+```
+
+然后查看已经连接过WIFI的配置文件：
+
+```bash
+netsh wlan show profiles
+```
+
+记下目标WIFI的名称与ssid，应该是相同的，不能记错，否则断开后程序再也无法连接。
+
+实际上，连接WIFI的主要命令只有两句：
+
+```
+# XXX按目标WIFI填写
+netsh wlan disconnect
+netsh wlan connect ssid=XXX name=XXX
+```
+
+### Windows批处理脚本
+
+创建`rasdial.bat`批处理脚本文件，此脚本的内容为每十分钟检测电脑与百度之间的连接性，在确认断连后执行上面的重连命令。
+
+```bash
+@echo off
+chcp 65001
+echo WIFI自动重连服务正在进行中.......
+echo 停止服务请按 Ctrl+C
+:begin
+echo %date% %time%
+ping baidu.com
+rem echo %errorlevel%
+if %errorlevel%==1 goto reconnect
+goto loop
+
+:reconnect
+echo %date% %time% 网络主动断开
+netsh wlan disconnect
+echo %date% %time% 正在重新连接中....
+netsh wlan connect ssid=HUBU-STUDENT name=HUBU-STUDENT
+echo %date% %time% 已发送连接请求....ssid=HUBU-STUDENT
+goto loop
+ 
+:loop
+timeout 10
+goto begin
+```
+
+除了监测与互联网的连接性外，还可以采取每日定时断开WIFI重新连接的方法，或者在Windows系统的计划任务程序功能中设置WIFI状态触发等方式。
+
+### 设置开机自动执行
+
+创建`reconnectInternet.vbs`文件，修改代码中的`bat文件路径`为上述bat脚本的路径：
+
+```bash
+set ws=wscript.createobject("wscript.shell") 
+ws.run "D:\softFreeInst\reconnectInternet\rasdial.bat /start",0
+```
+
+将vbs文件放到`C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp`路径下，以实现开机启动运行。
+
+病毒检测软件可能会报毒，允许即可。
